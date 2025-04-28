@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard';
 import TrademarkFiling from './pages/TrademarkFiling';
 import PatentFiling from './pages/PatentFiling';
 import CopyrightFiling from './pages/CopyrightFiling';
+import GenerateDocuments from './pages/GenerateDocuments';
+import Documents from './pages/Documents';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <Route path="/dashboard/trademark" element={<TrademarkFiling />} />
         <Route path="/dashboard/patent" element={<PatentFiling />} />
         <Route path="/dashboard/copyright" element={<CopyrightFiling />} />
+        <Route path="/dashboard/generate-documents" element={<GenerateDocuments />} />
+        <Route path="/dashboard/documents" element={<Documents />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

@@ -1,16 +1,19 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PatentFiling from './pages/PatentFiling';
+import UploadDashboard from './pages/UploadDashboard';
 import GenerateDocuments from './pages/GenerateDocuments';
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/trademark-filing" element={<TrademarkFiling />} />
+        <Route path="/" element={<PatentFiling />} />
+        <Route path="/dashboard/upload" element={<UploadDashboard />} />
         <Route path="/generate-documents" element={<GenerateDocuments />} />
-        {/* ... other routes ... */}
       </Routes>
     </Router>
   );
-}
+};
 
 export default App; 

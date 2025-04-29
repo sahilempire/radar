@@ -4,36 +4,21 @@ import { supabase } from '../config/supabaseClient';
 const AI_SERVICE_URL = process.env.REACT_APP_AI_SERVICE_URL || 'http://localhost:3001';
 
 // Claude API helper
-const callClaude = async (prompt) => {
-  console.log('Calling Claude API with prompt:', prompt);
+export const callClaude = async (prompt) => {
   try {
-    const response = await fetch(`${AI_SERVICE_URL}/api/claude`, {
+    const response = await fetch('http://localhost:3001/api/analyze', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ prompt }),
     });
-    
-    console.log('API Response status:', response.status);
-    
+
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error('API Error response:', errorData);
-      throw new Error(`Claude API error: ${response.status} ${errorData.error || 'Unknown error'}`);
+      throw new Error(`API Response status: ${response.status}`);
     }
-    
-    const data = await response.json();
-    console.log('API Success response:', data);
-    
-    // Handle the response format from Claude API
-    if (data.content && Array.isArray(data.content) && data.content[0]?.text) {
-      return data.content[0].text.trim();
-    } else if (data.content) {
-      return data.content.trim();
-    } else {
-      throw new Error('Invalid response format from Claude API');
-    }
+
+    return await response.json();
   } catch (error) {
     console.error('Error in callClaude:', error);
     throw error;
@@ -73,18 +58,64 @@ export const getAITrademarkName = async (name) => {
   }
 };
 
-export const getAIDescription = async (text) => {
-  console.log('Getting AI description for text:', text);
+export const getAIDescription = async (businessDescription) => {
   try {
-    const prompt = `Improve the following business description for clarity and professionalism.
-    Focus on making it clear, concise, and legally appropriate for trademark purposes.
+    const prompt = `You are a trademark expert. Based on the following business description, create a comprehensive trademark description.
+
+Business Description:
+${businessDescription}
+
+IMPORTANT: You must respond with ONLY a valid JSON object in the following exact format:
+{
+  "description": "Your suggested trademark description here",
+  "explanation": "Brief explanation of why this description is appropriate"
+}
+
+Do not include any other text, explanations, or formatting outside of the JSON object. The response must be valid JSON that can be parsed directly.`;
+
+    const response = await fetch('http://localhost:3001/api/analyze', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prompt })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to get AI description');
+    }
+
+    const data = await response.json();
     
-    Description: ${text}`;
-    const result = await callClaude(prompt);
-    console.log('AI Description result:', result);
-    return result;
+    if (!data.content || !data.content[0] || !data.content[0].text) {
+      throw new Error('Invalid response format from AI service');
+    }
+
+    const content = data.content[0].text.trim();
+    console.log('Raw AI response:', content); // Debug log
+
+    let parsedContent;
+    try {
+      // Try to find JSON in the response
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('No JSON object found in response');
+      }
+      parsedContent = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+      console.error('Error parsing AI response:', parseError);
+      console.error('Raw content that failed to parse:', content);
+      throw new Error('Failed to parse AI response as JSON');
+    }
+
+    if (!parsedContent.description || !parsedContent.explanation) {
+      throw new Error('AI response missing required fields');
+    }
+    
+    return parsedContent;
   } catch (error) {
-    console.error('Error getting AI description from Claude:', error);
+    console.error('Error getting AI description:', error);
     throw error;
   }
 };
@@ -121,23 +152,48 @@ Important:
 - Keep the summary concise (max 2 sentences)
 - Make sure the JSON is complete and properly formatted
 - Do not include any additional text outside the JSON structure`;
+
+    const response = await fetch('http://localhost:3001/api/analyze', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prompt })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get AI class recommendation');
+    }
+
+    const data = await response.json();
+    console.log('Raw API response:', data);
     
-    const result = await callClaude(prompt);
-    console.log('AI Class Recommendation result:', result);
+    if (!data.content || !data.content[0] || !data.content[0].text) {
+      console.error('Invalid response structure:', data);
+      throw new Error('Invalid response format from AI service');
+    }
+
+    const content = data.content[0].text.trim();
+    console.log('Content from response:', content);
     
-    // Parse the JSON response
+    let parsedResult;
     try {
-      // Extract JSON from the response
-      const jsonMatch = result.match(/\{[\s\S]*\}/);
+      // Try to find JSON in the response
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
+        console.error('No JSON found in content:', content);
         throw new Error('No JSON found in response');
       }
       
       const cleanedResult = jsonMatch[0].replace(/\n/g, ' ').trim();
-      const parsedResult = JSON.parse(cleanedResult);
+      console.log('Cleaned JSON string:', cleanedResult);
+      
+      parsedResult = JSON.parse(cleanedResult);
+      console.log('Parsed result:', parsedResult);
       
       // Validate the response structure
       if (!parsedResult.classes || !Array.isArray(parsedResult.classes)) {
+        console.error('Invalid classes structure:', parsedResult);
         throw new Error('Invalid response structure: missing or invalid classes array');
       }
       
@@ -147,6 +203,11 @@ Important:
         c.description !== 'Not applicable'
       );
       
+      if (parsedResult.classes.length === 0) {
+        console.error('No valid classes found after filtering');
+        throw new Error('No valid classes found in response');
+      }
+      
       // Ensure summary exists and is not truncated
       if (!parsedResult.summary) {
         parsedResult.summary = 'Based on the provided description, the following classes are recommended for trademark registration.';
@@ -155,6 +216,7 @@ Important:
       return parsedResult;
     } catch (parseError) {
       console.error('Error parsing AI response:', parseError);
+      console.error('Content that failed to parse:', content);
       throw new Error('Invalid AI response format. Please try again.');
     }
   } catch (error) {

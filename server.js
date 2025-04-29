@@ -3,7 +3,7 @@ require('dotenv').config({ path: '.env' });
 
 const express = require('express');
 const cors = require('cors');
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = require('node-fetch').default;
 const path = require('path');
 
 // Debug logging for environment variables and file paths
@@ -17,60 +17,61 @@ console.log('Environment variables:', {
 const app = express();
 const port = 3001;
 
-// Basic CORS configuration
+// Enable CORS
 app.use(cors());
 
 // Parse JSON bodies
 app.use(express.json());
 
-// Claude API endpoint
-app.post('/api/claude', async (req, res) => {
-  console.log('Received request:', req.body);
-  const { prompt } = req.body;
-  const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
-
-  if (!CLAUDE_API_KEY) {
-    console.error('CLAUDE_API_KEY is not set. Current environment:', process.env.NODE_ENV);
-    return res.status(500).json({ error: 'API key not configured' });
-  }
-
+// Proxy endpoint for AI analysis
+app.post('/api/analyze', async (req, res) => {
   try {
-    console.log('Making request to Claude API with prompt:', prompt);
+    if (!process.env.CLAUDE_API_KEY) {
+      throw new Error('CLAUDE_API_KEY is not set');
+    }
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': CLAUDE_API_KEY,
-        'anthropic-version': '2023-06-01',
+        'x-api-key': process.env.CLAUDE_API_KEY,
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
         model: 'claude-3-haiku-20240307',
-        max_tokens: 256,
-        temperature: 0.7,
+        max_tokens: 1500,
         messages: [
-          { role: 'user', content: prompt }
+          {
+            role: 'user',
+            content: req.body.prompt
+          }
         ]
-      }),
+      })
     });
-
-    console.log('Claude API response status:', response.status);
     
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Claude API error response:', errorText);
-      throw new Error(`Claude API error: ${response.status} ${errorText}`);
+      const errorData = await response.json();
+      console.error('Claude API error:', errorData);
+      throw new Error(`Claude API error: ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json();
-    console.log('Claude API success response:', data);
+    
+    if (!data.content || !data.content[0] || !data.content[0].text) {
+      throw new Error('Invalid response format from Claude API');
+    }
+
     res.json(data);
   } catch (error) {
-    console.error('Error calling Claude API:', error);
-    res.status(500).json({ error: error.message });
+    console.error('Error in proxy:', error);
+    res.status(500).json({ 
+      error: error.message,
+      details: error.stack
+    });
   }
 });
 
 // Start server
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Proxy server running at http://localhost:${port}`);
 }); 

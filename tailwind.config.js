@@ -1,17 +1,19 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
       colors: {
-        primary: '#B48465', // Copper
-        background: '#181818', // Deep dark
-        text: '#181818', // Brand text
-        light: '#fff',
-        accent: '#C9A88C', // Lighter copper accent
+        primary: '#0080ff',
+        background: '#000000',
+        accent: '#0080ff',
+        light: '#ffffff',
       },
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
       },
     },
   },

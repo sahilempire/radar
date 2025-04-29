@@ -1,14 +1,20 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Landing from './pages/Landing';
-import SignIn from './pages/SignIn';
-import SignUp from './pages/SignUp';
-import Dashboard from './pages/Dashboard';
-import TrademarkFiling from './pages/TrademarkFiling';
-import PatentFiling from './pages/PatentFiling';
-import CopyrightFiling from './pages/CopyrightFiling';
-import GenerateDocuments from './pages/GenerateDocuments';
-import Documents from './pages/Documents';
+import { 
+  Landing, 
+  SignIn, 
+  SignUp, 
+  Dashboard, 
+  TrademarkFiling, 
+  PatentFiling, 
+  CopyrightFiling, 
+  GenerateDocuments, 
+  Documents, 
+  UploadDocuments,
+  ComplianceChecker,
+  FilingPrep
+} from './pages';
+import MainLayout from './components/MainLayout';
 
 function App() {
   return (
@@ -18,11 +24,49 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/trademark" element={<TrademarkFiling />} />
-        <Route path="/dashboard/patent" element={<PatentFiling />} />
-        <Route path="/dashboard/copyright" element={<CopyrightFiling />} />
-        <Route path="/dashboard/generate-documents" element={<GenerateDocuments />} />
-        <Route path="/dashboard/documents" element={<Documents />} />
+        
+        {/* Routes with ProgressSidebar */}
+        <Route path="/dashboard/trademark" element={
+          <MainLayout>
+            <TrademarkFiling />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/patent" element={
+          <MainLayout>
+            <PatentFiling />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/copyright" element={
+          <MainLayout>
+            <CopyrightFiling />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/generate-documents" element={
+          <MainLayout>
+            <GenerateDocuments />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/documents/:filingId" element={
+          <MainLayout>
+            <Documents />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/documents/:filingId/upload" element={
+          <MainLayout>
+            <UploadDocuments />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/compliance/:filingId" element={
+          <MainLayout>
+            <ComplianceChecker />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/filing-prep/:filingId" element={
+          <MainLayout>
+            <FilingPrep />
+          </MainLayout>
+        } />
+        
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

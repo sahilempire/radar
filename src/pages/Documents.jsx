@@ -1,117 +1,228 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { getFilingDocuments } from '../services/documentService';
+import html2pdf from 'html2pdf.js';
 
 function Documents() {
-  const location = useLocation();
+  const { filingId } = useParams();
   const navigate = useNavigate();
-  const [isRegenerating, setIsRegenerating] = useState(false);
-  const { submissionData, generatedDocuments } = location.state || {};
+  const [isLoading, setIsLoading] = useState(true);
+  const [documents, setDocuments] = useState(null);
+  const [error, setError] = useState(null);
+  const [isValidated, setIsValidated] = useState(false);
 
-  const documents = [
-    {
-      name: 'Trademark Application',
-      type: 'USPTO Form',
-      status: 'Generated',
-      required: true
-    },
-    {
-      name: 'Goods and Services Description',
-      type: 'Legal Document',
-      status: 'Generated',
-      required: true
-    },
-    {
-      name: 'Declaration of Use',
-      type: 'USPTO Form',
-      status: 'Generated',
-      required: true
-    },
-    {
-      name: 'Specimen of Use',
-      type: 'Evidence Document',
-      status: 'Generated',
-      required: true
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      if (!filingId) {
+        setError('No filing ID provided');
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const response = await getFilingDocuments(filingId);
+        
+        if (response.success) {
+          setDocuments(response.data);
+        } else {
+          setError(response.error);
+          toast.error('Failed to fetch documents');
+        }
+      } catch (err) {
+        setError(err.message);
+        toast.error('Error fetching documents');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDocuments();
+  }, [filingId]);
+
+  const handleDownloadPDF = (documentType, content) => {
+    const element = document.createElement('div');
+    let formattedContent = '';
+
+    // Get the document content from the documents state based on document type
+    let documentContent = '';
+    switch(documentType) {
+      case 'Trademark Application':
+        documentContent = documents?.trademarkApplication || '';
+        break;
+      case 'Goods and Services Description':
+        documentContent = documents?.goodsAndServices || '';
+        break;
+      case 'Declaration of Use':
+        documentContent = documents?.declarationOfUse || '';
+        break;
+      case 'Specimen of Use':
+        documentContent = documents?.specimenOfUse || '';
+        break;
     }
-  ];
 
-  const handleDownload = (documentName) => {
-    // Simulate download
-    toast.success(`Downloading ${documentName}...`);
+    // Format the content by removing the placeholder text and ensuring proper line breaks
+    const formattedDocumentContent = documentContent
+      .replace(/\[Additional legal content\.\.\.\]/g, '')
+      .replace(/\n\s*\n/g, '\n') // Remove extra blank lines
+      .trim();
+
+    formattedContent = `
+      <div style="padding: 40px; font-family: Arial, sans-serif; line-height: 1.6;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <h1 style="font-size: 24px; color: #333; margin-bottom: 20px;">${documentType.toUpperCase()}</h1>
+          <div style="border-bottom: 2px solid #333; width: 100px; margin: 0 auto;"></div>
+        </div>
+
+        <div style="white-space: pre-wrap; font-size: 14px; line-height: 1.8;">
+          ${formattedDocumentContent}
+        </div>
+
+        <div style="margin-top: 40px; text-align: right;">
+          <p style="margin: 5px 0;"><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+          ${documentType === 'Trademark Application' || documentType === 'Declaration of Use' ? 
+            '<p style="margin: 5px 0;"><strong>Signature:</strong> _______________________</p>' : ''}
+        </div>
+      </div>
+    `;
+
+    element.innerHTML = formattedContent;
+
+    const opt = {
+      margin: 1,
+      filename: `trademark-${documentType.toLowerCase().replace(/\s+/g, '-')}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save();
   };
 
-  const handleRegenerate = async () => {
-    setIsRegenerating(true);
-    try {
-      // Simulate regeneration
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      toast.success('Documents regenerated successfully!');
-    } catch (error) {
-      toast.error('Failed to regenerate documents');
-    } finally {
-      setIsRegenerating(false);
-    }
+  const handleValidate = () => {
+    setIsValidated(true);
+    toast.success('All documents validated successfully');
   };
 
-  if (!submissionData) {
+  const getStatusBadge = (status) => {
+    if (isValidated) {
+      return (
+        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+          Validated
+        </span>
+      );
+    }
+    return (
+      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+        {status}
+      </span>
+    );
+  };
+
+  const handleContinueToUpload = () => {
+    navigate(`/dashboard/documents/${filingId}/upload`);
+  };
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <p className="text-primary">No submission data found. Please complete the filing process first.</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-primary">Loading documents...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center max-w-md p-6 bg-white rounded-lg shadow">
+          <div className="text-red-500 mb-4">
+            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold mb-2">Error Loading Documents</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={() => navigate('/dashboard/trademark')}
-            className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+            onClick={() => navigate('/dashboard')}
+            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
           >
-            Go to Filing
+            Back to Dashboard
           </button>
         </div>
       </div>
     );
   }
 
+  const documentList = [
+    {
+      name: 'Trademark Application',
+      type: 'USPTO Form',
+      status: 'Pending',
+      content: documents?.trademarkApplication
+    },
+    {
+      name: 'Goods and Services Description',
+      type: 'Legal Document',
+      status: 'Pending',
+      content: documents?.goodsAndServices
+    },
+    {
+      name: 'Declaration of Use',
+      type: 'USPTO Form',
+      status: 'Pending',
+      content: documents?.declarationOfUse
+    },
+    {
+      name: 'Specimen of Use',
+      type: 'Evidence Document',
+      status: 'Pending',
+      content: documents?.specimenOfUse
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white px-4 py-10">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-primary mb-2">Document Generator</h1>
-          <p className="text-gray-600">Generate and manage filing-ready documents for your application</p>
+          <h1 className="text-2xl font-bold text-primary">Generated Documents</h1>
+          <p className="text-gray-600 mt-2">Review and download your filing-ready documents</p>
         </div>
 
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-primary mb-4">Generated Documents</h2>
-          <p className="text-gray-600 mb-6">Review and download your filing-ready documents</p>
-
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200">
-              <thead>
-                <tr className="bg-gray-50">
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document Name</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
-                {documents.map((doc, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
+            <tbody className="bg-white divide-y divide-gray-200">
+              {documentList.map((doc) => (
+                <tr key={doc.name}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <span className="text-sm font-medium text-gray-900">{doc.name}</span>
-                        {doc.required && (
-                          <span className="ml-2 px-2 py-1 text-xs font-semibold text-red-600 bg-red-100 rounded-full">Required</span>
-                        )}
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{doc.name}</div>
+                        <div className="text-xs text-primary font-medium">Required</div>
                       </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{doc.type}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{doc.type}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 text-xs font-semibold text-green-600 bg-green-100 rounded-full">
-                        {doc.status}
-                      </span>
+                    {getStatusBadge(doc.status)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
-                        onClick={() => handleDownload(doc.name)}
-                        className="text-primary hover:text-primary/80 font-medium"
+                      onClick={() => handleDownloadPDF(doc.name, doc.content)}
+                      className="text-primary hover:text-primary/80"
                       >
                         Download PDF
                       </button>
@@ -120,33 +231,22 @@ function Documents() {
                 ))}
               </tbody>
             </table>
-          </div>
         </div>
 
-        <div className="flex justify-between items-center">
+        <div className="mt-8 flex justify-between">
+          <div className="flex gap-4">
           <button
-            onClick={() => navigate('/dashboard/generate-documents')}
-            className="px-4 py-2 text-primary hover:text-primary/80"
+              onClick={handleValidate}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
           >
-            Back to Generator
+              Validate
+            </button>
+            <button className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors">
+              Regenerate
           </button>
-          <button
-            onClick={handleRegenerate}
-            disabled={isRegenerating}
-            className={`px-6 py-2 rounded-lg font-semibold text-white shadow hover:shadow-primary/30 transition-all
-              ${isRegenerating ? 'bg-primary/70 cursor-not-allowed' : 'bg-primary'}`}
-          >
-            {isRegenerating ? (
-              <div className="flex items-center gap-2">
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span>Regenerating...</span>
               </div>
-            ) : (
-              'Regenerate'
-            )}
+          <button className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors" onClick={handleContinueToUpload}>
+            Continue to Upload
           </button>
         </div>
       </div>

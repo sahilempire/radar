@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import ProgressSidebar from '../components/ProgressSidebar';
 
-function GenerateDocuments() {
+const GenerateDocuments = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [submissionData, setSubmissionData] = useState(null);
@@ -10,10 +11,14 @@ function GenerateDocuments() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
 
+  // Add logging for route changes
   useEffect(() => {
     console.log('GenerateDocuments mounted');
+    console.log('Current path:', window.location.pathname);
     console.log('Location state:', location.state);
-    
+  }, [location]);
+
+  useEffect(() => {
     // Check if we have submission data
     if (location.state?.submissionData) {
       console.log('Found submission data:', location.state.submissionData);
@@ -24,9 +29,10 @@ function GenerateDocuments() {
       console.log('No submission data found');
       setError('No submission data found');
       toast.error('No submission data found. Please complete the trademark filing first.');
-      // Don't navigate automatically, let the user decide
+      // Navigate back to trademark filing
+      navigate('/dashboard/trademark');
     }
-  }, [location]);
+  }, [location, navigate]);
 
   const handleGenerate = async () => {
     if (!submissionData) {
@@ -44,13 +50,9 @@ function GenerateDocuments() {
       await new Promise(resolve => setTimeout(resolve, 2000));
       console.log('Documents generated successfully');
       toast.success('Documents generated successfully!');
-      // Navigate to documents page with the generated documents
-      navigate('/dashboard/documents', { 
-        state: { 
-          submissionData,
-          generatedDocuments: true 
-        }
-      });
+      
+      // Navigate to documents page with the filing ID
+      navigate(`/dashboard/documents/${submissionData.id}`);
     } catch (error) {
       console.error('Document generation error:', error);
       setError(error.message);
@@ -61,7 +63,8 @@ function GenerateDocuments() {
   };
 
   const handleBack = () => {
-    navigate('/trademark-filing');
+    console.log('Navigating back to trademark filing');
+    navigate('/dashboard/trademark');
   };
 
   if (isLoading) {
@@ -98,7 +101,8 @@ function GenerateDocuments() {
   }
 
   return (
-    <div className="min-h-screen bg-white px-4 py-10">
+    <div className="min-h-screen bg-white px-4 py-10">      
+     <ProgressSidebar/>
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-primary">Generate Documents</h1>

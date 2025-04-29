@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { uploadSupportingFile, deleteSupportingFile, initializeStorage, getFiling } from '../services';
 import ProgressSidebar from '../components/ProgressSidebar';
+import { IoArrowBack } from 'react-icons/io5';
 function UploadDocuments() {
   const { filingId } = useParams();
   const navigate = useNavigate();
@@ -180,7 +181,18 @@ function UploadDocuments() {
       <ProgressSidebar/>
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
+        <div className='flex items-center gap-2 mb-6'>
+            <button 
+            type="button"
+            className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-full hover:bg-gray-100"
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
+            >
+            <IoArrowBack className="w-6 h-6" />
+            </button>
           <h1 className="text-2xl font-bold text-primary">Upload Manager</h1>
+          </div>
+          
           <p className="text-gray-600 mt-2">Upload and manage supporting documents for your application</p>
         </div>
 

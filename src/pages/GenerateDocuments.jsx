@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import ProgressSidebar from '../components/ProgressSidebar';
-
+import { IoArrowBack } from 'react-icons/io5';
 const GenerateDocuments = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -63,8 +63,13 @@ const GenerateDocuments = () => {
   };
 
   const handleBack = () => {
-    console.log('Navigating back to trademark filing');
-    navigate('/dashboard/trademark');
+    console.log('Navigating back to trademark filing with data:', submissionData);
+    navigate('/dashboard/trademark', { 
+      state: { 
+        formData: submissionData,
+        isReturning: true 
+      } 
+    });
   };
 
   if (isLoading) {
@@ -101,17 +106,20 @@ const GenerateDocuments = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white px-4 py-10">      
+    <div className="bg-white px-4 py-10 max-w-4xl">      
      <ProgressSidebar/>
-      <div className="max-w-3xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-primary">Generate Documents</h1>
-          <button
-            onClick={handleBack}
-            className="px-4 py-2 text-primary hover:text-primary/80 transition-colors"
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center mb-6">
+        <button 
+            type="button"
+            className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-full hover:bg-gray-100"
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
           >
-            Back to Filing
+            <IoArrowBack className="w-6 h-6" />
           </button>
+          <h1 className="text-2xl p-2 font-bold text-primary">Generate Documents</h1>
+          
         </div>
         
         <div className="bg-white rounded-lg shadow p-6">

@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getFiling } from '../services/filingService';
 import { analyzeApprovalChances, analyzeFilingDates } from '../services/aiService';
-
+import { IoArrowBack } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 function FilingPrep() {
   const { filingId } = useParams();
+  const navigate = useNavigate();
   const [filingData, setFilingData] = useState(null);
   const [approvalChances, setApprovalChances] = useState(null);
   const [filingDates, setFilingDates] = useState(null);
@@ -81,7 +83,6 @@ IMPORTANT: Respond ONLY with the JSON object, no additional text or explanation.
         const datesData = JSON.parse(datesResponse.content[0].text);
         setFilingDates(datesData);
       } catch (error) {
-        console.error('Error analyzing filing:', error);
         setError(error.message || 'Failed to analyze filing');
       } finally {
         setIsLoading(false);
@@ -120,7 +121,19 @@ IMPORTANT: Respond ONLY with the JSON object, no additional text or explanation.
     <div className="min-h-screen bg-white px-4 py-10">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-primary">Filing Preparation</h1>
+        <div className="flex items-center gap-2 mb-6">
+            <button
+              type="button"
+              className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-full hover:bg-gray-100"
+              onClick={() => navigate(-1)}
+              aria-label="Go back"
+            >
+              <IoArrowBack className="w-6 h-6" />
+            </button>
+            <h1 className="text-2xl font-bold text-primary">
+              Filing Preparation
+            </h1>
+          </div>
           <p className="text-gray-600 mt-2">Prepare your trademark application for final submission</p>
         </div>
 
@@ -149,7 +162,7 @@ IMPORTANT: Respond ONLY with the JSON object, no additional text or explanation.
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="text-2xl font-bold text-primary">
-                  {Math.round(approvalChances.approvalChance * 100)}%
+                  {Math.round(approvalChances.approvalChance )}%
                 </span>
               </div>
             </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { submitTrademarkForm, getAIDescription, getAIClassRecommendation, getAITrademarkName, getAIMarkDescription } from '../services/trademarkService';
 import { validateTrademarkForm } from '../services/validationService';
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AddressInput from '../components/AddressInput';
 import { IoArrowBack } from 'react-icons/io5';
 import { IoInformationCircleOutline, IoBagHandleOutline, IoDocumentTextOutline, IoSparkles } from 'react-icons/io5';
@@ -68,6 +68,7 @@ const countries = ['United States', 'India', 'United Kingdom', 'Canada', 'Austra
 
 const TrademarkFiling = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [form, setForm] = useState(initialForm);
   const [step, setStep] = useState(0);
   const [validationErrors, setValidationErrors] = useState({});
@@ -82,6 +83,16 @@ const TrademarkFiling = () => {
     console.log('TrademarkFiling mounted');
     console.log('Current path:', window.location.pathname);
   }, []);
+
+  // Add useEffect to handle returned form data
+  useEffect(() => {
+    if (location.state?.isReturning && location.state?.formData) {
+      console.log('Received form data from GenerateDocuments:', location.state.formData);
+      setForm(location.state.formData);
+      // Set the step to the last step since we're returning from GenerateDocuments
+      setStep(steps.length - 1);
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -553,7 +564,7 @@ const TrademarkFiling = () => {
           <>
             <div>
               <label className="block font-medium mb-1 text-gray-700">Filing Basis <span className="text-[#0080ff]">*</span></label>
-              <select name="filingBasis" value={form.filingBasis} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" required>
+              <select name="filingBasis" value={form.filingBasis} onChange={handleChange} className="w-[80%] px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" required>
                 <option value="">Select basis</option>
                 {filingBases.map((t) => <option key={t} value={t}>{t}</option>)}
               </select>

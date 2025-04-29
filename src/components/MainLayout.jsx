@@ -52,7 +52,7 @@ const MainLayout = ({ children }) => {
       <div className="w-64 flex-shrink-0">
         <ProgressSidebar progress={progress} />
       </div>
-      <main className="flex w-full p-10">
+      <main className="w-full p-10">
         {children}
       </main>
     </div>

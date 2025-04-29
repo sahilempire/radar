@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { getFilingDocuments } from '../services/documentService';
 import html2pdf from 'html2pdf.js';
-
+import { IoArrowBack } from 'react-icons/io5';
 function Documents() {
   const { filingId } = useParams();
   const navigate = useNavigate();
@@ -187,8 +187,19 @@ function Documents() {
   return (
     <div className="min-h-screen bg-white px-4 py-10">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
+        <div className="mb-8 ">
+          <div className='flex items-center gap-2 mb-6'>
+            <button 
+            type="button"
+            className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-full hover:bg-gray-100"
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
+            >
+            <IoArrowBack className="w-6 h-6" />
+            </button>
           <h1 className="text-2xl font-bold text-primary">Generated Documents</h1>
+          </div>
+          
           <p className="text-gray-600 mt-2">Review and download your filing-ready documents</p>
         </div>
 

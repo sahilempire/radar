@@ -245,22 +245,17 @@ function Documents() {
         </div>
 
         <div className="mt-8 flex justify-between">
-          <div className="flex gap-4">
-            <button
-              onClick={handleValidate}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Validate
-            </button>
-            <button className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors">
-              Regenerate
-            </button>
-          </div>
+          <button className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors">
+            Regenerate
+          </button>
           <button
-            onClick={() => navigate(`/dashboard/compliance/${filingId}`)}
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            onClick={handleValidate}
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
           >
-            Check Compliance
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            <span>Validate Documents</span>
           </button>
         </div>
 
@@ -316,10 +311,13 @@ function Documents() {
         {/* Continue to Upload Button */}
         <div className="mt-8 flex justify-end">
           <button 
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors" 
+            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2" 
             onClick={handleContinueToUpload}
           >
-            Continue to Upload
+            <span>Continue to Upload</span>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>

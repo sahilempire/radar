@@ -69,18 +69,12 @@ function UploadDocuments() {
     initStorage();
   }, []);
 
-  const handleFileDrop = (e) => {
-    e.preventDefault();
-    const droppedFiles = Array.from(e.dataTransfer.files);
-    handleFiles(droppedFiles);
-  };
+  const handleFiles = async (newFiles) => {
+    if (!selectedCategory) {
+      toast.error('Please select a document category first');
+      return;
+    }
 
-  const handleFileSelect = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    handleFiles(selectedFiles);
-  };
-
-  const handleFiles = (newFiles) => {
     const validFiles = newFiles.filter(file => {
       const isValidType = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'image/tiff'].includes(file.type);
       const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB
@@ -96,74 +90,42 @@ function UploadDocuments() {
       return true;
     });
 
-    setFiles(prev => [...prev, ...validFiles]);
+    if (validFiles.length > 0) {
+      try {
+        setIsUploading(true);
+        for (const file of validFiles) {
+          const result = await uploadSupportingFile(filingId, file, selectedCategory);
+          if (result.success) {
+            setUploadedFiles(prev => [...prev, {
+              id: result.data.id,
+              name: file.name,
+              category: selectedCategory,
+              size: file.size,
+              type: file.type
+            }]);
+            toast.success(`Successfully uploaded ${file.name}`);
+          } else {
+            throw new Error(result.error || 'Failed to upload file');
+          }
+        }
+      } catch (error) {
+        console.error('Error in handleFiles:', error);
+        toast.error(`Error uploading file: ${error.message}`);
+      } finally {
+        setIsUploading(false);
+      }
+    }
   };
 
-  const handleFileUpload = async (files) => {
-    if (!selectedCategory) {
-      toast.error('Please select a document category first');
-      return;
-    }
+  const handleFileSelect = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    handleFiles(selectedFiles);
+  };
 
-    if (!filingExists) {
-      toast.error('Filing not found. Please create a filing first.');
-      return;
-    }
-
-    if (isLoading) {
-      toast.error('Please wait while we verify your filing');
-      return;
-    }
-
-    if (!isStorageReady) {
-      toast.error('Storage is not ready. Please try again in a moment.');
-      return;
-    }
-
-    try {
-      setIsUploading(true);
-      console.log('Starting file upload process...');
-      console.log('Filing ID:', filingId);
-      console.log('Selected category:', selectedCategory);
-      console.log('Files to upload:', files);
-
-      // Upload each file
-      for (const file of files) {
-        console.log('Processing file:', file.name);
-        console.log('File details:', {
-          name: file.name,
-          type: file.type,
-          size: file.size
-        });
-
-        const result = await uploadSupportingFile(filingId, file, selectedCategory);
-        console.log('Upload result:', result);
-        
-        if (result.success) {
-          console.log('File uploaded successfully:', file.name);
-          // Add to uploaded files state
-          setUploadedFiles(prev => [...prev, {
-            id: result.data.id,
-            name: file.name,
-            category: selectedCategory,
-            size: file.size,
-            type: file.type
-          }]);
-          
-          toast.success(`Successfully uploaded ${file.name}`);
-        } else {
-          console.error('Upload failed:', result.error);
-          throw new Error(result.error || 'Failed to upload file');
-        }
-      }
-    } catch (error) {
-      console.error('Error in handleFileUpload:', error);
-      toast.error(`Error uploading file: ${error.message}`);
-    } finally {
-      console.log('Upload process completed');
-      setIsUploading(false);
-      setFiles([]); // Clear the selected files after upload attempt
-    }
+  const handleFileDrop = (e) => {
+    e.preventDefault();
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    handleFiles(droppedFiles);
   };
 
   const handleRemoveFile = async (fileId) => {
@@ -312,7 +274,7 @@ function UploadDocuments() {
                   <h3 className="text-lg font-medium mb-4">Document Checklist</h3>
                   <ul className="space-y-4">
                     {documentCategories.filter(cat => cat.required).map(category => {
-                      const isUploaded = uploadedFiles.some(file => file.category === category.id);
+                      const isUploaded = uploadedFiles.some(file => file.category === category.id && file.id);
                       return (
                         <li 
                           key={category.id} 
@@ -356,7 +318,7 @@ function UploadDocuments() {
                     <div 
                       className="bg-primary h-2 rounded-full transition-all duration-300" 
                       style={{ 
-                        width: `${(uploadedFiles.filter(file => documentCategories.find(cat => cat.id === file.category)?.required).length / documentCategories.filter(cat => cat.required).length) * 100}%` 
+                        width: `${Math.min(100, (uploadedFiles.filter(file => documentCategories.find(cat => cat.id === file.category)?.required).length / documentCategories.filter(cat => cat.required).length) * 100)}%` 
                       }}
                     ></div>
                   </div>
@@ -373,25 +335,15 @@ function UploadDocuments() {
           >
             Back
           </button>
-          <div className="space-x-4">
-            <button
-              onClick={() => navigate(`/dashboard/compliance/${filingId}`)}
-              className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-            >
-              Check Compliance
-            </button>
-            <button
-              onClick={() => handleFileUpload(files)}
-              disabled={isUploading || !selectedCategory || files.length === 0}
-              className={`px-6 py-2 bg-primary text-white rounded-lg ${
-                isUploading || !selectedCategory || files.length === 0
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:bg-primary/90'
-              }`}
-            >
-              {isUploading ? 'Uploading...' : 'Upload Files'}
-            </button>
-          </div>
+          <button
+            onClick={() => navigate(`/dashboard/compliance/${filingId}`)}
+            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 flex items-center gap-2"
+          >
+            Check Compliance
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>

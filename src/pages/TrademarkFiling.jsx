@@ -353,7 +353,7 @@ const TrademarkFiling = () => {
         <div className='flex items-center gap-4 mb-6'> 
           <button 
             type="button"
-            className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-full hover:bg-gray-100"
+            className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
             onClick={() => navigate(-1)}
             aria-label="Go back"
           >

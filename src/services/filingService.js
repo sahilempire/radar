@@ -210,4 +210,93 @@ export const deleteSupportingFile = async (fileId) => {
     console.error('Error deleting supporting file:', error);
     return { success: false, error: error.message };
   }
+};
+
+export const getFilingPrepAnalysis = async (filingId) => {
+  try {
+    // Get filing data
+    const filing = await getFiling(filingId);
+    if (!filing) {
+      throw new Error('Filing data not found');
+    }
+
+    // Construct the prompt for AI analysis
+    const prompt = `Analyze the following trademark filing data and provide a comprehensive preparation report:
+
+Filing Data:
+${JSON.stringify(filing, null, 2)}
+
+Please provide a detailed analysis report in the following JSON format:
+{
+  "overview": {
+    "status": "string",
+    "summary": "string",
+    "nextSteps": ["string"],
+    "approvalPercentage": number // A number between 0-100 indicating the likelihood of approval
+  },
+  "applicationReview": {
+    "strengths": ["string"],
+    "weaknesses": ["string"],
+    "recommendations": ["string"]
+  },
+  "documentAnalysis": {
+    "requiredDocuments": ["string"],
+    "missingDocuments": ["string"],
+    "documentStatus": {
+      "logo": "string",
+      "specimen": "string",
+      "declaration": "string",
+      "consent": "string",
+      "foreign": "string"
+    }
+  },
+  "filingStrategy": {
+    "jurisdictionOrder": ["string"],
+    "timeline": {
+      "filingDate": "string",
+      "firstOfficeAction": "string",
+      "estimatedRegistration": "string"
+    },
+    "risks": ["string"],
+    "opportunities": ["string"]
+  },
+  "recommendations": [
+    {
+      "title": "string",
+      "description": "string",
+      "priority": "high" | "medium" | "low"
+    }
+  ]
+}
+
+IMPORTANT: 
+1. The approvalPercentage should be based on the overall strength of the application, completeness of documents, and compliance with requirements.
+2. Respond ONLY with the JSON object, no additional text or explanation.`;
+
+    // Call the AI analysis endpoint
+    const response = await fetch('http://localhost:3001/api/analyze', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get AI analysis');
+    }
+
+    const data = await response.json();
+    
+    // Parse the nested response structure
+    const parsedResponse = JSON.parse(data.content[0].text);
+    
+    return {
+      success: true,
+      ...parsedResponse
+    };
+  } catch (error) {
+    console.error('Error getting filing preparation analysis:', error);
+    throw error;
+  }
 }; 

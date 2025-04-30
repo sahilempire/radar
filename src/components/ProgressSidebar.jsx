@@ -27,7 +27,7 @@ const steps = [
     id: 'compliance',
     title: 'Compliance Check',
     description: 'Verify compliance with IP offices',
-    path: '/dashboard/compliance-check',
+    path: '/dashboard/compliance',
     progress: 80
   },
   {
@@ -43,10 +43,42 @@ const ProgressSidebar = ({ progress }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  // Ensure progress is a valid number between 0 and 100
-  const safeProgress = Math.min(Math.max(Number(progress) || 0, 0), 100);
+  // Calculate progress based on current step
+  const getCurrentProgress = () => {
+    // Normalize the current path
+    const normalizedPath = currentPath.replace(/\/+$/, '');
+    
+    console.log('Debug - Current Path:', currentPath);
+    console.log('Debug - Normalized Path:', normalizedPath);
+    
+    const currentStep = steps.find(step => {
+      // Normalize the step path
+      const normalizedStepPath = step.path.replace(/\/+$/, '');
+      
+      console.log('Debug - Checking Step:', step.id);
+      console.log('Debug - Step Path:', step.path);
+      console.log('Debug - Normalized Step Path:', normalizedStepPath);
+      
+      const matches = normalizedPath === normalizedStepPath || 
+             normalizedPath.startsWith(normalizedStepPath + '/') ||
+             (step.id === 'documents' && normalizedPath.includes('/dashboard/documents/')) ||
+             (step.id === 'compliance' && (normalizedPath.includes('/dashboard/compliance/') || normalizedPath === '/dashboard/compliance'));
+      
+      console.log('Debug - Matches:', matches);
+      
+      return matches;
+    });
 
-  console.log('Progress:', safeProgress);
+    console.log('Debug - Found Step:', currentStep);
+    console.log('Debug - Progress:', currentStep ? currentStep.progress : 0);
+    
+    return currentStep ? currentStep.progress : 0;
+  };
+
+  // Use calculated progress if no progress prop is provided
+  const safeProgress = progress !== undefined ? Math.min(Math.max(Number(progress) || 0, 0), 100) : getCurrentProgress();
+
+  console.log('Debug - Final Progress:', safeProgress);
 
   // Debug progress updates
   useEffect(() => {
@@ -54,28 +86,27 @@ const ProgressSidebar = ({ progress }) => {
   }, [safeProgress]);
 
   const getStepStatus = (step, index) => {
+    // Normalize the current path
+    const normalizedPath = currentPath.replace(/\/+$/, '');
+    
     const currentStepIndex = steps.findIndex(s => {
-      const normalizedCurrentPath = currentPath.replace(/\/+$/, '');
+      // Normalize the step path
       const normalizedStepPath = s.path.replace(/\/+$/, '');
       
-      return normalizedCurrentPath.startsWith(normalizedStepPath) || 
-        (s.id === 'documents' && currentPath.includes('/dashboard/documents/'));
+      return normalizedPath === normalizedStepPath || 
+             normalizedPath.startsWith(normalizedStepPath + '/') ||
+             (s.id === 'documents' && normalizedPath.includes('/dashboard/documents/')) ||
+             (s.id === 'compliance' && (normalizedPath.includes('/dashboard/compliance/') || normalizedPath === '/dashboard/compliance'));
     });
     
-    console.log('Current Path:', currentPath);
     console.log('Current Step Index:', currentStepIndex);
-    console.log('Current Step:', steps[currentStepIndex]?.title || 'No active step');
-    console.log('Checking Step:', step.title, 'Index:', index);
     
     if (index < currentStepIndex) {
-      console.log('Status: Completed');
       return 'completed';
     }
     if (index === currentStepIndex) {
-      console.log('Status: Active');
       return 'active';
     }
-    console.log('Status: Pending');
     return 'pending';
   };
 

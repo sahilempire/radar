@@ -1,112 +1,119 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const steps = [
-  {
-    id: 'trademark',
-    title: 'Trademark Filing',
-    description: 'Complete the trademark application form',
-    path: '/dashboard/trademark',
-    progress: 20
-  },
-  {
-    id: 'generate-documents',
-    title: 'Generate Documents',
-    description: 'Review and generate filing documents',
-    path: '/dashboard/generate-documents',
-    progress: 40
-  },
-  {
-    id: 'documents',
-    title: 'Documents',
-    description: 'Manage your documents',
-    path: '/dashboard/documents',
-    progress: 60
-  },
-  {
-    id: 'compliance',
-    title: 'Compliance Check',
-    description: 'Verify compliance with IP offices',
-    path: '/dashboard/compliance',
-    progress: 80
-  },
-  {
-    id: 'filing-prep',
-    title: 'Filing Preparation',
-    description: 'Final review before submission',
-    path: '/dashboard/filing-prep',
-    progress: 100
+const getSteps = (path) => {
+  if (path.includes('/patent')) {
+    return [
+      {
+        id: 'patent',
+        title: 'Patent Filing',
+        description: 'Complete the patent application form',
+        path: '/dashboard/patent',
+        progress: 20
+      },
+      {
+        id: 'generate-documents',
+        title: 'Generate Documents',
+        description: 'Review and generate filing documents',
+        path: '/dashboard/patent/generate-documents',
+        progress: 40
+      },
+      {
+        id: 'documents',
+        title: 'Documents',
+        description: 'Manage your documents',
+        path: '/dashboard/patent/documents',
+        progress: 60
+      },
+      {
+        id: 'compliance',
+        title: 'Compliance Check',
+        description: 'Verify compliance with patent office',
+        path: '/dashboard/patent/compliance',
+        progress: 80
+      },
+      {
+        id: 'filing-prep',
+        title: 'Filing Preparation',
+        description: 'Final review before submission',
+        path: '/dashboard/patent/filing',
+        progress: 100
+      }
+    ];
+  } else {
+    return [
+      {
+        id: 'trademark',
+        title: 'Trademark Filing',
+        description: 'Complete the trademark application form',
+        path: '/dashboard/trademark',
+        progress: 20
+      },
+      {
+        id: 'generate-documents',
+        title: 'Generate Documents',
+        description: 'Review and generate filing documents',
+        path: '/dashboard/generate-documents',
+        progress: 40
+      },
+      {
+        id: 'documents',
+        title: 'Documents',
+        description: 'Manage your documents',
+        path: '/dashboard/documents',
+        progress: 60
+      },
+      {
+        id: 'compliance',
+        title: 'Compliance Check',
+        description: 'Verify compliance with IP offices',
+        path: '/dashboard/compliance',
+        progress: 80
+      },
+      {
+        id: 'filing-prep',
+        title: 'Filing Preparation',
+        description: 'Final review before submission',
+        path: '/dashboard/filing-prep',
+        progress: 100
+      }
+    ];
   }
-];
+};
 
-const ProgressSidebar = ({ progress }) => {
+const ProgressSidebar = ({ progress: externalProgress }) => {
   const location = useLocation();
-  const currentPath = location.pathname;
+  const steps = getSteps(location.pathname);
 
-  // Calculate progress based on current step
-  const getCurrentProgress = () => {
-    // Normalize the current path
-    const normalizedPath = currentPath.replace(/\/+$/, '');
-    
-    console.log('Debug - Current Path:', currentPath);
-    console.log('Debug - Normalized Path:', normalizedPath);
-    
-    const currentStep = steps.find(step => {
-      // Normalize the step path
-      const normalizedStepPath = step.path.replace(/\/+$/, '');
-      
-      console.log('Debug - Checking Step:', step.id);
-      console.log('Debug - Step Path:', step.path);
-      console.log('Debug - Normalized Step Path:', normalizedStepPath);
-      
-      const matches = normalizedPath === normalizedStepPath || 
-             normalizedPath.startsWith(normalizedStepPath + '/') ||
-             (step.id === 'documents' && normalizedPath.includes('/dashboard/documents/')) ||
-             (step.id === 'compliance' && (normalizedPath.includes('/dashboard/compliance/') || normalizedPath === '/dashboard/compliance'));
-      
-      console.log('Debug - Matches:', matches);
-      
-      return matches;
-    });
+  const getStepFromPath = (path) => {
+    // Find all matching steps and get the one with the longest matching path
+    const matchingSteps = steps.map((step, index) => ({
+      ...step,
+      index,
+      isMatch: path === step.path || path.startsWith(step.path + '/')
+    })).filter(step => step.isMatch);
 
-    console.log('Debug - Found Step:', currentStep);
-    console.log('Debug - Progress:', currentStep ? currentStep.progress : 0);
+    // Get the step with the longest matching path
+    const bestMatch = matchingSteps.reduce((best, current) => 
+      (best?.path.length > current.path.length) ? best : current,
+      null
+    );
     
-    return currentStep ? currentStep.progress : 0;
+    console.log('Best matching step found:', bestMatch);
+    return bestMatch ? bestMatch.index : 0;
   };
 
-  // Use calculated progress if no progress prop is provided
-  const safeProgress = progress !== undefined ? Math.min(Math.max(Number(progress) || 0, 0), 100) : getCurrentProgress();
+  const currentStepIndex = getStepFromPath(location.pathname);
+  const currentProgress = steps[currentStepIndex]?.progress || 0;
 
-  console.log('Debug - Final Progress:', safeProgress);
+  // Use external progress if provided, otherwise use calculated progress
+  const safeProgress = externalProgress !== undefined 
+    ? Math.min(Math.max(Number(externalProgress) || 0, 0), 100) 
+    : currentProgress;
 
-  // Debug progress updates
-  useEffect(() => {
-    console.log('ProgressSidebar received new progress:', safeProgress);
-  }, [safeProgress]);
-
-  const getStepStatus = (step, index) => {
-    // Normalize the current path
-    const normalizedPath = currentPath.replace(/\/+$/, '');
-    
-    const currentStepIndex = steps.findIndex(s => {
-      // Normalize the step path
-      const normalizedStepPath = s.path.replace(/\/+$/, '');
-      
-      return normalizedPath === normalizedStepPath || 
-             normalizedPath.startsWith(normalizedStepPath + '/') ||
-             (s.id === 'documents' && normalizedPath.includes('/dashboard/documents/')) ||
-             (s.id === 'compliance' && (normalizedPath.includes('/dashboard/compliance/') || normalizedPath === '/dashboard/compliance'));
-    });
-    
-    console.log('Current Step Index:', currentStepIndex);
-    
-    if (index < currentStepIndex) {
-      return 'completed';
-    }
-    if (index === currentStepIndex) {
-      return 'active';
-    }
+  const getStepStatus = (index) => {
+    if (index < currentStepIndex) return 'completed';
+    if (index === currentStepIndex) return 'active';
     return 'pending';
   };
 
@@ -114,8 +121,14 @@ const ProgressSidebar = ({ progress }) => {
     <div className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 overflow-y-auto">
       <div className="p-6">
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-black">Filing Progress</h2>
-          <p className="text-sm text-gray-600">Track your trademark application progress</p>
+          <h2 className="text-xl font-semibold text-black">
+            {location.pathname.includes('/patent') ? 'Patent Filing Progress' : 'Trademark Filing Progress'}
+          </h2>
+          <p className="text-sm text-gray-600">
+            {location.pathname.includes('/patent') 
+              ? 'Track your patent application progress' 
+              : 'Track your trademark application progress'}
+          </p>
         </div>
 
         {/* Progress bar */}
@@ -134,7 +147,7 @@ const ProgressSidebar = ({ progress }) => {
 
         <div className="space-y-6">
           {steps.map((step, index) => {
-            const status = getStepStatus(step, index);
+            const status = getStepStatus(index);
             const isCompleted = status === 'completed';
             const isActive = status === 'active';
 

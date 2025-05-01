@@ -181,7 +181,53 @@ const PatentFiling = () => {
     }
   };
 
+  const validateStep = (currentStep) => {
+    const errors = {};
+    
+    switch(currentStep) {
+      case 0: // Basic Info
+        if (!form.patentTitle.trim()) errors.patentTitle = 'Patent title is required';
+        if (!form.inventorNames.trim()) errors.inventorNames = 'Inventor name(s) are required';
+        if (!form.patentType) errors.patentType = 'Patent type is required';
+        if (!form.briefSummary.trim()) errors.briefSummary = 'Brief summary is required';
+        break;
+        
+      case 1: // Detailed Description
+        if (!form.technicalField.trim()) errors.technicalField = 'Technical field is required';
+        if (!form.backgroundArt.trim()) errors.backgroundArt = 'Background art is required';
+        if (!form.detailedDescription.trim()) errors.detailedDescription = 'Detailed description is required';
+        if (!form.advantageousEffects.trim()) errors.advantageousEffects = 'Advantageous effects are required';
+        break;
+        
+      case 2: // Prior Art
+        if (!form.knownPriorArt.trim()) errors.knownPriorArt = 'Known prior art is required';
+        break;
+        
+      case 3: // Claims
+        if (!form.claims.length || !form.claims.some(claim => claim.trim())) {
+          errors.claims = 'At least one claim is required';
+        }
+        break;
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateStep(step)) {
+      setStep(s => Math.min(steps.length - 1, s + 1));
+    } else {
+      toast.error('Please fill in all required fields');
+    }
+  };
+
   const handleSubmit = async () => {
+    if (!validateStep(step)) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmissionError(null);
 
@@ -200,6 +246,16 @@ const PatentFiling = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Add error display helper
+  const showError = (fieldName) => {
+    if (validationErrors[fieldName]) {
+      return (
+        <p className="text-red-500 text-sm mt-1">{validationErrors[fieldName]}</p>
+      );
+    }
+    return null;
   };
 
   // Progress calculation
@@ -277,10 +333,13 @@ const PatentFiling = () => {
               name="patentTitle"
               value={form.patentTitle}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+              className={`w-full px-4 py-3 rounded-lg border ${
+                validationErrors.patentTitle ? 'border-red-500' : 'border-[#0080ff]/20'
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
               placeholder="Enter patent title"
               required
             />
+            {showError('patentTitle')}
           </div>
 
           <div>
@@ -290,10 +349,13 @@ const PatentFiling = () => {
               name="inventorNames"
               value={form.inventorNames}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+              className={`w-full px-4 py-3 rounded-lg border ${
+                validationErrors.inventorNames ? 'border-red-500' : 'border-[#0080ff]/20'
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
               placeholder="Enter inventor name(s), separate multiple names with commas"
               required
             />
+            {showError('inventorNames')}
           </div>
 
           <div>
@@ -302,7 +364,9 @@ const PatentFiling = () => {
               name="patentType"
               value={form.patentType}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+              className={`w-full px-4 py-3 rounded-lg border ${
+                validationErrors.patentType ? 'border-red-500' : 'border-[#0080ff]/20'
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
               required
             >
               <option value="">Select patent type</option>
@@ -310,6 +374,7 @@ const PatentFiling = () => {
                 <option key={type} value={type}>{type}</option>
               ))}
             </select>
+            {showError('patentType')}
           </div>
 
           <div>
@@ -318,11 +383,14 @@ const PatentFiling = () => {
               name="briefSummary"
               value={form.briefSummary}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+              className={`w-full px-4 py-3 rounded-lg border ${
+                validationErrors.briefSummary ? 'border-red-500' : 'border-[#0080ff]/20'
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
               placeholder="Provide a brief summary of your invention"
               rows="3"
               required
             />
+            {showError('briefSummary')}
           </div>
         </div>
       )}
@@ -335,11 +403,14 @@ const PatentFiling = () => {
               name="technicalField"
               value={form.technicalField}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+              className={`w-full px-4 py-3 rounded-lg border ${
+                validationErrors.technicalField ? 'border-red-500' : 'border-[#0080ff]/20'
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
               placeholder="Describe the technical field to which the invention relates"
               rows="4"
               required
             />
+            {showError('technicalField')}
           </div>
 
           <div>
@@ -348,11 +419,14 @@ const PatentFiling = () => {
               name="backgroundArt"
               value={form.backgroundArt}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+              className={`w-full px-4 py-3 rounded-lg border ${
+                validationErrors.backgroundArt ? 'border-red-500' : 'border-[#0080ff]/20'
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
               placeholder="Describe the existing art, problems, and limitations that your invention addresses"
               rows="4"
               required
             />
+            {showError('backgroundArt')}
           </div>
 
           <div>
@@ -361,11 +435,14 @@ const PatentFiling = () => {
               name="detailedDescription"
               value={form.detailedDescription}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+              className={`w-full px-4 py-3 rounded-lg border ${
+                validationErrors.detailedDescription ? 'border-red-500' : 'border-[#0080ff]/20'
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
               placeholder="Provide a detailed description of your invention, including all components, how they interact, and alternative embodiments"
               rows="6"
               required
             />
+            {showError('detailedDescription')}
           </div>
 
           <div>
@@ -374,11 +451,14 @@ const PatentFiling = () => {
               name="advantageousEffects"
               value={form.advantageousEffects}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+              className={`w-full px-4 py-3 rounded-lg border ${
+                validationErrors.advantageousEffects ? 'border-red-500' : 'border-[#0080ff]/20'
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
               placeholder="Describe the advantages and improvements your invention provides over existing solutions"
               rows="4"
               required
             />
+            {showError('advantageousEffects')}
           </div>
 
           <div>
@@ -391,7 +471,9 @@ const PatentFiling = () => {
                   name="drawingFigure1"
                   value={form.drawingFigure1}
                   onChange={handleChange}
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-1"
+                  className={`flex h-10 w-full rounded-md border ${
+                    validationErrors.drawingFigure1 ? 'border-red-500' : 'border-gray-300'
+                  } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-1`}
                   placeholder="Fig. 1"
                 />
                 <input
@@ -399,7 +481,9 @@ const PatentFiling = () => {
                   name="drawingDescription1"
                   value={form.drawingDescription1}
                   onChange={handleChange}
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3"
+                  className={`flex h-10 w-full rounded-md border ${
+                    validationErrors.drawingDescription1 ? 'border-red-500' : 'border-gray-300'
+                  } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3`}
                   placeholder="Description of Figure 1"
                 />
               </div>
@@ -409,7 +493,9 @@ const PatentFiling = () => {
                   name="drawingFigure2"
                   value={form.drawingFigure2}
                   onChange={handleChange}
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-1"
+                  className={`flex h-10 w-full rounded-md border ${
+                    validationErrors.drawingFigure2 ? 'border-red-500' : 'border-gray-300'
+                  } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-1`}
                   placeholder="Fig. 2"
                 />
                 <input
@@ -417,7 +503,9 @@ const PatentFiling = () => {
                   name="drawingDescription2"
                   value={form.drawingDescription2}
                   onChange={handleChange}
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3"
+                  className={`flex h-10 w-full rounded-md border ${
+                    validationErrors.drawingDescription2 ? 'border-red-500' : 'border-gray-300'
+                  } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3`}
                   placeholder="Description of Figure 2"
                 />
               </div>
@@ -434,11 +522,14 @@ const PatentFiling = () => {
               name="knownPriorArt"
               value={form.knownPriorArt}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+              className={`w-full px-4 py-3 rounded-lg border ${
+                validationErrors.knownPriorArt ? 'border-red-500' : 'border-[#0080ff]/20'
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
               placeholder="Describe any known existing solutions or technologies related to your invention"
               rows="4"
               required
             />
+            {showError('knownPriorArt')}
           </div>
 
           <div>
@@ -456,7 +547,9 @@ const PatentFiling = () => {
                         newRefs[index] = { ...ref, reference: e.target.value };
                         setForm(f => ({ ...f, priorArtReferences: newRefs }));
                       }}
-                      className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                      className={`flex h-10 w-full rounded-md border ${
+                        validationErrors.priorArtReferences ? 'border-red-500' : 'border-gray-300'
+                      } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
                       placeholder="Patent number or article title"
                     />
                   </div>
@@ -470,7 +563,9 @@ const PatentFiling = () => {
                         newRefs[index] = { ...ref, type: e.target.value };
                         setForm(f => ({ ...f, priorArtReferences: newRefs }));
                       }}
-                      className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                      className={`flex h-10 w-full rounded-md border ${
+                        validationErrors.priorArtReferences ? 'border-red-500' : 'border-gray-300'
+                      } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
                       placeholder="Patent, Article, etc."
                     />
                   </div>
@@ -484,7 +579,9 @@ const PatentFiling = () => {
                         newRefs[index] = { ...ref, relevance: e.target.value };
                         setForm(f => ({ ...f, priorArtReferences: newRefs }));
                       }}
-                      className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                      className={`flex h-10 w-full rounded-md border ${
+                        validationErrors.priorArtReferences ? 'border-red-500' : 'border-gray-300'
+                      } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0080ff]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
                       placeholder="How it relates to your invention"
                     />
                   </div>
@@ -531,7 +628,9 @@ const PatentFiling = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+                className={`flex-1 px-4 py-3 rounded-lg border ${
+                  validationErrors.searchQuery ? 'border-red-500' : 'border-[#0080ff]/20'
+                } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
                 placeholder="Enter keywords related to your invention"
               />
               <button
@@ -610,11 +709,14 @@ const PatentFiling = () => {
               name="claims"
               value={form.claims.join('\n')}
               onChange={(e) => setForm(f => ({ ...f, claims: e.target.value.split('\n') }))}
-              className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700"
+              className={`w-full px-4 py-3 rounded-lg border ${
+                validationErrors.claims ? 'border-red-500' : 'border-[#0080ff]/20'
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
               placeholder="Enter patent claims (one per line)"
               rows="6"
               required
             />
+            {showError('claims')}
           </div>
         </div>
       )}
@@ -650,13 +752,15 @@ const PatentFiling = () => {
             if (step === steps.length - 1) {
               handleSubmit();
             } else {
-              setStep(s => Math.min(steps.length - 1, s + 1));
+              handleNext();
             }
           }}
-          className="px-6 py-2 bg-[#0080ff] text-white rounded-lg hover:bg-[#0080ff]/90 transition-colors"
+          className={`px-6 py-2 text-white rounded-lg transition-colors ${
+            isSubmitting ? 'bg-[#0080ff]/50' : 'bg-[#0080ff] hover:bg-[#0080ff]/90'
+          }`}
           disabled={isSubmitting}
         >
-          {step === steps.length - 1 ? 'Submit' : 'Next'}
+          {isSubmitting ? 'Processing...' : step === steps.length - 1 ? 'Submit' : 'Next'}
         </button>
       </div>
     </div>

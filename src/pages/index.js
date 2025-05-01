@@ -1,27 +1,17 @@
-import Landing from './Landing';
-import SignIn from './SignIn';
-import SignUp from './SignUp';
-import Dashboard from './Dashboard';
-import TrademarkFiling from './TrademarkFiling';
-import PatentFiling from './PatentFiling';
-import CopyrightFiling from './CopyrightFiling';
-import GenerateDocuments from './GenerateDocuments';
-import Documents from './Documents';
-import UploadDocuments from './UploadDocuments';
-import ComplianceChecker from './ComplianceChecker';
-import FilingPrep from './FilingPrep';
-
-export {
-  Landing,
-  SignIn,
-  SignUp,
-  Dashboard,
-  TrademarkFiling,
-  PatentFiling,
-  CopyrightFiling,
-  GenerateDocuments,
-  Documents,
-  UploadDocuments,
-  ComplianceChecker,
-  FilingPrep
-}; 
+export { default as Landing } from './Landing';
+export { default as SignIn } from './SignIn';
+export { default as SignUp } from './SignUp';
+export { default as Dashboard } from './Dashboard';
+export { default as TrademarkFiling } from './TrademarkFiling';
+export { default as PatentFiling } from './PatentFiling';
+export { default as PatentGenerateDocuments } from './PatentGenerateDocuments';
+export { default as PatentDocuments } from './PatentDocuments';
+export { default as PatentCompliance } from './PatentCompliance';
+export { default as PatentFilingPreparation } from './PatentFilingPreparation';
+export { default as PatentConfirmation } from './PatentConfirmation';
+export { default as CopyrightFiling } from './CopyrightFiling';
+export { default as GenerateDocuments } from './GenerateDocuments';
+export { default as Documents } from './Documents';
+export { default as UploadDocuments } from './UploadDocuments';
+export { default as ComplianceChecker } from './ComplianceChecker';
+export { default as FilingPrep } from './FilingPrep'; 

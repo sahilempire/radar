@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { getFilingDocuments } from '../services/documentService';
-import html2pdf from 'html2pdf.js';
 import { IoArrowBack } from 'react-icons/io5';
-function Documents() {
-  const { filingId } = useParams();
+import { getPatentFilingDocuments, downloadPatentDocument } from '../services/patentDocumentService';
+
+const PatentDocuments = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [documents, setDocuments] = useState(null);
   const [error, setError] = useState(null);
@@ -14,21 +14,28 @@ function Documents() {
 
   useEffect(() => {
     const fetchDocuments = async () => {
-      if (!filingId) {
-        setError('No filing ID provided');
-        setIsLoading(false);
-        return;
-      }
-
       try {
         setIsLoading(true);
-        const response = await getFilingDocuments(filingId);
         
-        if (response.success) {
-          setDocuments(response.data);
+        // First check if we have generated documents in the state
+        if (location.state?.generatedDocuments) {
+          setDocuments(location.state.generatedDocuments);
+          setIsLoading(false);
+          return;
+        }
+
+        // If no generated documents, try to fetch from the service
+        if (location.state?.filingId) {
+          const response = await getPatentFilingDocuments(location.state.filingId);
+          
+          if (response.success) {
+            setDocuments(response.data);
+          } else {
+            setError(response.error);
+            toast.error('Failed to fetch documents');
+          }
         } else {
-          setError(response.error);
-          toast.error('Failed to fetch documents');
+          setError('No filing ID provided');
         }
       } catch (err) {
         setError(err.message);
@@ -39,65 +46,46 @@ function Documents() {
     };
 
     fetchDocuments();
-  }, [filingId]);
+  }, [location.state]);
 
-  const handleDownloadPDF = (documentType, content) => {
-    const element = document.createElement('div');
-    let formattedContent = '';
+  const handleDownloadPDF = async (documentType, content) => {
+    try {
+      toast.loading('Generating PDF...');
+      
+      // Get the document content based on document type
+      let documentContent = '';
+      switch(documentType) {
+        case 'Patent Application Form':
+          documentContent = documents?.patentApplication || '';
+          break;
+        case 'Specification Document':
+          documentContent = documents?.specification || '';
+          break;
+        case 'Claims Document':
+          documentContent = documents?.claims || '';
+          break;
+        case 'Abstract':
+          documentContent = documents?.abstract || '';
+          break;
+        case 'Drawings':
+          documentContent = documents?.drawings || '';
+          break;
+        case 'Declaration':
+          documentContent = documents?.declaration || '';
+          break;
+      }
 
-    // Get the document content from the documents state based on document type
-    let documentContent = '';
-    switch(documentType) {
-      case 'Trademark Application':
-        documentContent = documents?.trademarkApplication || '';
-        break;
-      case 'Goods and Services Description':
-        documentContent = documents?.goodsAndServices || '';
-        break;
-      case 'Declaration of Use':
-        documentContent = documents?.declarationOfUse || '';
-        break;
-      case 'Specimen of Use':
-        documentContent = documents?.specimenOfUse || '';
-        break;
+      // If no content is found, show an error
+      if (!documentContent) {
+        throw new Error(`No content found for ${documentType}`);
+      }
+
+      await downloadPatentDocument(documentType, documentContent);
+      toast.success('PDF downloaded successfully');
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      toast.error('Failed to generate PDF. Please try again.');
     }
-
-    // Format the content by removing the placeholder text and ensuring proper line breaks
-    const formattedDocumentContent = documentContent
-      .replace(/\[Additional legal content\.\.\.\]/g, '')
-      .replace(/\n\s*\n/g, '\n') // Remove extra blank lines
-      .trim();
-
-    formattedContent = `
-      <div style="padding: 40px; font-family: Arial, sans-serif; line-height: 1.6;">
-        <div style="text-align: center; margin-bottom: 40px;">
-          <h1 style="font-size: 24px; color: #333; margin-bottom: 20px;">${documentType.toUpperCase()}</h1>
-          <div style="border-bottom: 2px solid #333; width: 100px; margin: 0 auto;"></div>
-        </div>
-
-        <div style="white-space: pre-wrap; font-size: 14px; line-height: 1.8;">
-          ${formattedDocumentContent}
-        </div>
-
-        <div style="margin-top: 40px; text-align: right;">
-          <p style="margin: 5px 0;"><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-          ${documentType === 'Trademark Application' || documentType === 'Declaration of Use' ? 
-            '<p style="margin: 5px 0;"><strong>Signature:</strong> _______________________</p>' : ''}
-        </div>
-      </div>
-    `;
-
-    element.innerHTML = formattedContent;
-
-    const opt = {
-      margin: 1,
-      filename: `trademark-${documentType.toLowerCase().replace(/\s+/g, '-')}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(element).save();
   };
 
   const handleValidate = () => {
@@ -120,8 +108,13 @@ function Documents() {
     );
   };
 
-  const handleContinueToUpload = () => {
-    navigate(`/dashboard/documents/${filingId}/upload`);
+  const handleContinueToCompliance = () => {
+    navigate('/dashboard/patent/compliance', { 
+      state: { 
+        submissionData: location.state.submissionData,
+        documents: documents
+      } 
+    });
   };
 
   if (isLoading) {
@@ -147,10 +140,10 @@ function Documents() {
           <h2 className="text-xl font-semibold mb-2">Error Loading Documents</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/dashboard/patent')}
             className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
           >
-            Back to Dashboard
+            Back to Patent Filing
           </button>
         </div>
       </div>
@@ -159,65 +152,77 @@ function Documents() {
 
   const documentList = [
     {
-      name: 'Trademark Application',
+      name: 'Patent Application Form',
       type: 'USPTO Form',
       status: 'Generated',
-      content: documents?.trademarkApplication
+      content: documents?.patentApplication
     },
     {
-      name: 'Goods and Services Description',
+      name: 'Specification Document',
       type: 'Legal Document',
       status: 'Generated',
-      content: documents?.goodsAndServices
+      content: documents?.specification
     },
     {
-      name: 'Declaration of Use',
-      type: 'USPTO Form',
+      name: 'Claims Document',
+      type: 'Legal Document',
       status: 'Generated',
-      content: documents?.declarationOfUse
+      content: documents?.claims
     },
     {
-      name: 'Specimen of Use',
-      type: 'Evidence Document',
+      name: 'Abstract',
+      type: 'Legal Document',
       status: 'Generated',
-      content: documents?.specimenOfUse
+      content: documents?.abstract
+    },
+    {
+      name: 'Drawings',
+      type: 'Technical Document',
+      status: 'Generated',
+      content: documents?.drawings
+    },
+    {
+      name: 'Declaration',
+      type: 'Legal Document',
+      status: 'Generated',
+      content: documents?.declaration
     }
   ];
 
   return (
     <div className="min-h-screen bg-white px-4 py-10">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8 ">
+        <div className="mb-8">
           <div className='flex items-center gap-2 mb-6'>
             <button 
-            type="button"
-            className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
-            onClick={() => navigate(-1)}
-            aria-label="Go back"
+              type="button"
+              className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
+              onClick={() => navigate(-1)}
+              aria-label="Go back"
             >
-            <IoArrowBack className="w-6 h-6" />
+              <IoArrowBack className="w-6 h-6" />
             </button>
-          <h1 className="text-2xl font-bold text-primary">Generated Documents</h1>
+            <h1 className="text-2xl font-bold text-primary">Generated Patent Documents</h1>
           </div>
           
-          <p className="text-gray-600 mt-2">Review and download your filing-ready documents</p>
+          <p className="text-gray-600 mt-2">Review and download your patent filing-ready documents</p>
         </div>
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                </tr>
-              </thead>
+              </tr>
+            </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {documentList.map((doc) => (
                 <tr key={doc.name}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
                       <div>
                         <div className="text-sm font-medium text-gray-900">{doc.name}</div>
                         <div className="text-xs text-primary font-medium">Required</div>
@@ -226,22 +231,22 @@ function Documents() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{doc.type}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
                     {getStatusBadge(doc.status)}
-                    </td>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
+                    <button
                       onClick={() => handleDownloadPDF(doc.name, doc.content)}
                       className="text-primary hover:text-primary/80"
-                      >
-                        Download PDF
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    >
+                      Download PDF
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         <div className="mt-8 flex justify-between">
@@ -272,7 +277,7 @@ function Documents() {
               </div>
               <div>
                 <h3 className="text-lg font-medium text-gray-900">Review Documents</h3>
-                <p className="text-gray-600">Download and carefully review all generated documents for accuracy</p>
+                <p className="text-gray-600">Download and carefully review all generated patent documents for accuracy</p>
               </div>
             </div>
 
@@ -287,7 +292,7 @@ function Documents() {
               </div>
               <div>
                 <h3 className="text-lg font-medium text-gray-900">Validate Compliance</h3>
-                <p className="text-gray-600">Run our compliance checker to ensure all filing requirements are met</p>
+                <p className="text-gray-600">Run our compliance checker to ensure all patent filing requirements are met</p>
               </div>
             </div>
 
@@ -302,19 +307,19 @@ function Documents() {
               </div>
               <div>
                 <h3 className="text-lg font-medium text-gray-900">Submit Application</h3>
-                <p className="text-gray-600">Use the documents to file your application with the appropriate IP office</p>
+                <p className="text-gray-600">Use the documents to file your patent application with the appropriate patent office</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Continue to Upload Button */}
+        {/* Continue to Compliance Button */}
         <div className="mt-8 flex justify-end">
           <button 
             className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2" 
-            onClick={handleContinueToUpload}
+            onClick={handleContinueToCompliance}
           >
-            <span>Continue to Upload</span>
+            <span>Continue to Compliance Check</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
             </svg>
@@ -323,6 +328,6 @@ function Documents() {
       </div>
     </div>
   );
-}
+};
 
-export default Documents; 
+export default PatentDocuments; 

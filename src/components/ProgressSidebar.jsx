@@ -144,12 +144,12 @@ const ProgressSidebar = ({ progress }) => {
                 {index > 0 && (
                   <div className={`absolute left-4 top-0 w-0.5 h-6 ${
                     isCompleted ? 'bg-[#0080ff]' : 'bg-gray-200'
-                  }`} />
+                  }`} style={{ marginTop: '-24px' }} />
                 )}
 
                 <div className="flex items-start gap-3">
                   {/* Step indicator */}
-                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center relative z-10 ${
                     isCompleted 
                       ? 'bg-[#0080ff] text-white' 
                       : isActive 

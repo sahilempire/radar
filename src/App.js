@@ -7,6 +7,11 @@ import {
   Dashboard, 
   TrademarkFiling, 
   PatentFiling, 
+  PatentGenerateDocuments,
+  PatentDocuments,
+  PatentCompliance,
+  PatentFilingPreparation,
+  PatentConfirmation,
   CopyrightFiling, 
   GenerateDocuments, 
   Documents, 
@@ -25,22 +30,53 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
         
-        {/* Routes with ProgressSidebar */}
+        {/* Trademark Routes */}
         <Route path="/dashboard/trademark" element={
           <MainLayout>
             <TrademarkFiling />
           </MainLayout>
         } />
+        
+        {/* Patent Routes */}
         <Route path="/dashboard/patent" element={
           <MainLayout>
             <PatentFiling />
           </MainLayout>
         } />
+        <Route path="/dashboard/patent/generate-documents" element={
+          <MainLayout>
+            <PatentGenerateDocuments />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/patent/documents" element={
+          <MainLayout>
+            <PatentDocuments />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/patent/compliance" element={
+          <MainLayout>
+            <PatentCompliance />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/patent/filing" element={
+          <MainLayout>
+            <PatentFilingPreparation />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/patent/confirmation" element={
+          <MainLayout>
+            <PatentConfirmation />
+          </MainLayout>
+        } />
+        
+        {/* Copyright Routes */}
         <Route path="/dashboard/copyright" element={
           <MainLayout>
             <CopyrightFiling />
           </MainLayout>
         } />
+        
+        {/* Legacy Routes */}
         <Route path="/dashboard/generate-documents" element={
           <MainLayout>
             <GenerateDocuments />

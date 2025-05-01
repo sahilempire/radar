@@ -76,7 +76,7 @@ const PatentConfirmation = () => {
             <p className="font-medium">{submissionData?.patentTitle}</p>
           </div>
           <div>
-            <p className="text-gray-600">Patent Type</p>
+            <p className="text-gray-600">Type of Patent</p>
             <p className="font-medium">{submissionData?.patentType}</p>
           </div>
         </div>

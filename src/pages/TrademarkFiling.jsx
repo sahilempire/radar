@@ -347,7 +347,7 @@ const TrademarkFiling = () => {
   const progressPercent = ((step + 1) / steps.length) * 100;
 
   return (
-    <div className="w-full p-8 outline outline-1 outline-gray-200 rounded-lg">
+    <div className="w-[88%] mx-auto p-8 outline outline-1 outline-gray-200 rounded-lg">
       {/* Progress Bar Section */}
       <div className="mb-8">
         <div className='flex items-center gap-4 mb-6'> 

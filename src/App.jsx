@@ -1,7 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/MainLayout';
+import PatentLayout from './components/PatentLayout';
 import TrademarkFiling from './pages/TrademarkFiling';
+import PatentFiling from './pages/PatentFiling';
 import Documents from './pages/Documents';
 import UploadDocuments from './pages/UploadDocuments';
 import ComplianceChecker from './pages/ComplianceChecker';
@@ -23,14 +25,44 @@ function App() {
           </MainLayout>
         } />
         
-        {/* Generate Documents Route */}
-        <Route path="/dashboard/generate-documents" element={
-          <MainLayout>
-            <GenerateDocuments />
-          </MainLayout>
+        {/* Patent Routes */}
+        <Route path="/dashboard/patent" element={
+          <PatentLayout>
+            <PatentFiling />
+          </PatentLayout>
         } />
         
-        {/* Documents Routes */}
+        <Route path="/dashboard/patent/generate-documents" element={
+          <PatentLayout>
+            <GenerateDocuments />
+          </PatentLayout>
+        } />
+        
+        <Route path="/dashboard/patent/documents/:filingId" element={
+          <PatentLayout>
+            <Documents />
+          </PatentLayout>
+        } />
+        
+        <Route path="/dashboard/patent/documents/:filingId/upload" element={
+          <PatentLayout>
+            <UploadDocuments />
+          </PatentLayout>
+        } />
+        
+        <Route path="/dashboard/patent/compliance/:filingId" element={
+          <PatentLayout>
+            <ComplianceChecker />
+          </PatentLayout>
+        } />
+        
+        <Route path="/dashboard/patent/filing-prep/:filingId" element={
+          <PatentLayout>
+            <PreFiling />
+          </PatentLayout>
+        } />
+
+        {/* Trademark Document Routes */}
         <Route path="/dashboard/documents">
           <Route path=":filingId" element={
             <MainLayout>
@@ -44,14 +76,14 @@ function App() {
           } />
         </Route>
 
-        {/* Compliance Route */}
+        {/* Trademark Compliance Route */}
         <Route path="/dashboard/compliance/:filingId" element={
           <MainLayout>
             <ComplianceChecker />
           </MainLayout>
         } />
 
-        {/* Filing Prep Route */}
+        {/* Trademark Filing Prep Route */}
         <Route path="/dashboard/filing-prep/:filingId" element={
           <MainLayout>
             <PreFiling />

@@ -76,7 +76,7 @@ const Dashboard = () => {
 
         {/* Cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-4xl mx-auto">
-          {filingTypes.map((type) => (
+            {filingTypes.map((type) => (
             <div
               key={type.key}
               className="group bg-white rounded-2xl p-6 border border-gray-200 hover:border-gray-300 transition-all duration-300"
@@ -120,7 +120,7 @@ const Dashboard = () => {
                 Start {type.label} Process
               </button>
             </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>

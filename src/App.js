@@ -20,6 +20,9 @@ import {
   FilingPrep
 } from './pages';
 import MainLayout from './components/MainLayout';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import ResponsibleAI from './pages/ResponsibleAI';
 
 function App() {
   return (
@@ -29,6 +32,11 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        
+        {/* Legal Pages */}
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/responsible-ai" element={<ResponsibleAI />} />
         
         {/* Trademark Routes */}
         <Route path="/dashboard/trademark" element={

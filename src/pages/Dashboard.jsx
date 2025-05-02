@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import { MinimalFooter } from '../components/Footer';
+import logoHorizontal from '../assests/logo-horizontal.png';
 
 const filingTypes = [
   {
@@ -56,6 +58,10 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
+      {/* Logo */}
+      <div className="w-full flex justify-center pt-10">
+        <img src={logoHorizontal} alt="Radar Logo" className="h-16 w-auto" />
+      </div>
       {/* Background elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
@@ -63,7 +69,7 @@ const Dashboard = () => {
       </div>
 
       {/* Main content */}
-      <div className="relative container mx-auto px-4 py-12 md:py-16">
+      <div className="relative container mx-auto px-6 py-12 md:py-16">
         {/* Header section */}
         <div className="text-center mb-8 md:mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
@@ -123,6 +129,7 @@ const Dashboard = () => {
             ))}
         </div>
       </div>
+      <MinimalFooter />
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, FileText, CreditCard, Check } from 'react-feather';
+import { ArrowRight, Shield, FileText, CreditCard, Check, Cpu, PhoneCall } from 'react-feather';
 import platformImage from '../assests/preview.png';
+import logoHorizontal from '../assests/logo-horizontal.png';
 
 const Landing = () => {
   const features = [
@@ -17,8 +18,8 @@ const Landing = () => {
     },
     {
       icon: <CreditCard className="h-6 w-6 text-[#C67B49]" />,
-      title: "Secure Payment Processing",
-      description: "Safe and seamless payment processing for all your filing submissions with multiple payment options."
+      title: "Smart Class Selection Assistant",
+      description: "Let our AI recommend the right trademark classes for your application based on your product or service description, no legal jargon needed."
     }
   ];
 
@@ -34,10 +35,7 @@ const Landing = () => {
       <nav className="flex items-center justify-between py-6 px-4 max-w-7xl mx-auto">
         <div className="flex items-center">
           <Link to="/">
-            <div className="flex items-center">
-              <span className="text-[#C67B49] text-3xl font-bold">R</span>
-              <span className="text-2xl font-medium ml-2">Radar</span>
-            </div>
+            <img src={logoHorizontal} alt="Radar Logo" className="h-14 w-auto" />
           </Link>
         </div>
         <div className="flex gap-4">
@@ -70,30 +68,24 @@ const Landing = () => {
         </p>
         
         <Link to="/signup">
-          <button className="bg-[#C67B49] hover:bg-[#C67B49]/90 text-white rounded-full px-8 py-6 text-lg flex items-center gap-2 transition-colors">
+          <button className="bg-[#C67B49] hover:bg-[#C67B49]/90 text-white rounded-[30px] px-8 py-6 text-lg flex items-center gap-2 transition-colors">
             Try Now <ArrowRight className="h-5 w-5" />
           </button>
         </Link>
 
         {/* Trust Indicators */}
-        <div className="mt-12 flex flex-wrap justify-center gap-8 text-gray-700">
+        <div className="mt-12 flex flex-wrap justify-center gap-28 text-gray-700 max-w-3xl md:max-w-4xl mx-auto px-6 md:px-12">
           <div className="flex items-center">
-            <svg className="w-5 h-5 text-[#C67B49] mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
+            <Cpu className="w-5 h-5 text-[#C67B49] mr-2" />
             <span>AI-Powered Accuracy</span>
           </div>
           <div className="flex items-center">
-            <svg className="w-5 h-5 text-[#C67B49] mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
+            <Shield className="w-5 h-5 text-[#C67B49] mr-2" />
             <span>Secure & Compliant</span>
           </div>
           <div className="flex items-center">
-            <svg className="w-5 h-5 text-[#C67B49] mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            <span>24/7 Support</span>
+            <PhoneCall className="w-5 h-5 text-[#C67B49] mr-2" />
+            <span>AI-Powered Accuracy</span>
           </div>
         </div>
       </div>
@@ -175,16 +167,14 @@ const Landing = () => {
           <div className="flex flex-col md:flex-row justify-between items-start mb-10">
             <div className="flex flex-col items-start mb-6 md:mb-0">
               <div className="flex items-center">
-                <span className="text-[#C67B49] text-3xl font-bold">R</span>
-                <span className="text-2xl font-medium ml-2">Radar</span>
-                <span className="ml-4 px-2 py-0.5 text-xs border border-white/30 rounded">BETA</span>
+                <img src={logoHorizontal} alt="Radar Logo" className="h-14 w-auto" />
               </div>
               <p className="text-gray-400 text-sm mt-2">IP Protection Made Simple</p>
             </div>
           </div>
-          
           <div className="border-t border-gray-700 pt-6 pb-4">
             <div className="flex flex-col md:flex-row justify-start items-start gap-2 md:gap-6 mb-8">
+              {/* Footer navigation links - ensure your router has these routes */}
               <Link to="/terms" className="text-sm text-gray-400 hover:text-white">Terms of Use</Link>
               <span className="hidden md:inline text-gray-500">•</span>
               <Link to="/privacy" className="text-sm text-gray-400 hover:text-white">Privacy Policy</Link>
@@ -194,7 +184,7 @@ const Landing = () => {
             <div>
               <p className="text-gray-400 text-sm">
                 Copyright 2025. All rights reserved. Radar, A thing by 
-                <span className="ml-1 opacity-70">NEURAL PATHS</span>
+                <span className="ml-1 opacity-70">NEURALARC</span>
               </p>
             </div>
           </div>

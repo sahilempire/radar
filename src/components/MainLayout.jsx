@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import ProgressSidebar from './ProgressSidebar';
+import { MinimalFooter } from './Footer';
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
@@ -72,13 +73,16 @@ const MainLayout = ({ children }) => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <div className="w-64 flex-shrink-0">
-        <ProgressSidebar progress={progress} />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <div className="flex flex-1">
+        <div className="w-64 flex-shrink-0">
+          <ProgressSidebar progress={progress} />
+        </div>
+        <main className="w-full p-10">
+          {children}
+        </main>
       </div>
-      <main className="w-full p-10">
-        {children}
-      </main>
+      <MinimalFooter />
     </div>
   );
 };

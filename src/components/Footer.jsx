@@ -79,4 +79,18 @@ const Footer = () => {
   );
 };
 
-export default Footer; 
+const MinimalFooter = () => (
+  <footer className="bg-white border-t border-[#f2e6dd] py-6 text-center text-xs w-full">
+    <div className="max-w-4xl mx-auto px-4 flex flex-wrap items-center justify-center gap-4 md:gap-6 text-center">
+      <Link to="/terms" className="hover:text-[#C67B49] text-[#C67B49] transition-colors">Terms of Use</Link>
+      <span className="text-[#C67B49]">•</span>
+      <Link to="/privacy" className="hover:text-[#C67B49] text-[#C67B49] transition-colors">Privacy Policy</Link>
+      <span className="text-[#C67B49]">•</span>
+      <Link to="/responsible-ai" className="hover:text-[#C67B49] text-[#C67B49] transition-colors">Responsible AI</Link>
+      <span className="text-[#C67B49]">•</span>
+      <span className="text-gray-500">Copyright {new Date().getFullYear()}. All rights reserved. <span className="font-semibold text-[#C67B49]">Radar</span>, A thing by <span className="font-semibold text-[#C67B49]">NeuralArc</span></span>
+    </div>
+  </footer>
+);
+
+export { Footer, MinimalFooter }; 

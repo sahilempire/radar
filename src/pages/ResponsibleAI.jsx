@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'react-feather';
+import logoHorizontal from '../assests/logo-horizontal.png';
 
 const ResponsibleAI = () => {
   return (
@@ -9,10 +10,7 @@ const ResponsibleAI = () => {
       <nav className="flex items-center justify-between py-6 px-4 max-w-7xl mx-auto">
         <div className="flex items-center">
           <Link to="/">
-            <div className="flex items-center">
-              <span className="text-[#C67B49] text-3xl font-bold">R</span>
-              <span className="text-2xl font-medium ml-2">Radar</span>
-            </div>
+            <img src={logoHorizontal} alt="Radar Logo" className="h-14 w-auto" />
           </Link>
         </div>
         <div className="flex gap-4">
@@ -31,14 +29,11 @@ const ResponsibleAI = () => {
 
       {/* Responsible AI Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
-        <Link to="/" className="inline-flex items-center text-[#C67B49] mb-6 hover:underline">
-          <ArrowLeft className="h-4 w-4 mr-1" />
-          Back to Home
-        </Link>
+        
         
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
           <span className="inline-flex items-center">
-            <span className="text-[#C67B49] mr-2">🤖</span> Responsible AI Disclaimer
+            <span className="text-[#C67B49] mr-2"></span> Responsible AI Disclaimer
           </span>
         </h1>
 
@@ -125,9 +120,7 @@ const ResponsibleAI = () => {
           <div className="flex flex-col md:flex-row justify-between items-start mb-10">
             <div className="flex flex-col items-start mb-6 md:mb-0">
               <div className="flex items-center">
-                <span className="text-[#C67B49] text-3xl font-bold">R</span>
-                <span className="text-2xl font-medium ml-2">Radar</span>
-                <span className="ml-4 px-2 py-0.5 text-xs border border-white/30 rounded">BETA</span>
+                <img src={logoHorizontal} alt="Radar Logo" className="h-14 w-auto" />
               </div>
               <p className="text-gray-400 text-sm mt-2">IP Protection Made Simple</p>
             </div>
@@ -144,7 +137,7 @@ const ResponsibleAI = () => {
             <div>
               <p className="text-gray-400 text-sm">
                 Copyright 2025. All rights reserved. Radar, A thing by 
-                <span className="ml-1 opacity-70">NEURAL PATHS</span>
+                <span className="ml-1 opacity-70">NEURALARC</span>
               </p>
             </div>
           </div>

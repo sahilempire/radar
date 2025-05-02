@@ -5,6 +5,10 @@ import { IoArrowBack } from 'react-icons/io5';
 import { IoInformationCircleOutline, IoDocumentTextOutline, IoSearchOutline, IoListOutline, IoBulbOutline } from 'react-icons/io5';
 import { searchPriorArt } from '../api/priorArtSearch';
 import CustomSelect from '../components/CustomSelect';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 const steps = [
   'Basic Info',
@@ -56,7 +60,7 @@ const countries = ['United States', 'India', 'United Kingdom', 'Canada', 'Austra
 
 // AI Suggestion Box Component
 const AISuggestionBox = ({ suggestions }) => (
-  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+  <div className="bg-[#F1E8E2] border border-[#C67B49]/20 rounded-lg p-4 mb-6">
     <div className="flex items-center gap-2 mb-2">
       <IoBulbOutline className="w-5 h-5 text-[#C67B49]" />
       <h3 className="text-sm font-medium text-gray-900">AI Suggestions</h3>
@@ -336,7 +340,7 @@ const PatentFiling = () => {
               onChange={handleChange}
               className={`w-full px-4 py-3 rounded-lg border ${
                 validationErrors.patentTitle ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`}
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
               placeholder="Enter patent title"
               required
             />
@@ -352,7 +356,7 @@ const PatentFiling = () => {
               onChange={handleChange}
               className={`w-full px-4 py-3 rounded-lg border ${
                 validationErrors.inventorNames ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`}
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
               placeholder="Enter inventor name(s), separate multiple names with commas"
               required
             />
@@ -380,13 +384,140 @@ const PatentFiling = () => {
               onChange={handleChange}
               className={`w-full px-4 py-3 rounded-lg border ${
                 validationErrors.briefSummary ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`}
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
               placeholder="Provide a brief summary of your invention"
               rows="3"
               required
             />
             {showError('briefSummary')}
           </div>
+
+          {form.priorityClaim && (
+            <>
+              <div>
+                <label className="block font-medium mb-1 text-gray-700">Priority Filing Date</label>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={form.priorityFilingDate ? dayjs(form.priorityFilingDate) : null}
+                    onChange={date => setForm(f => ({ ...f, priorityFilingDate: date ? date.format('YYYY-MM-DD') : '' }))}
+                    disableFuture
+                    format="DD-MM-YYYY"
+                    slotProps={{
+                      textField: {
+                        placeholder: 'dd-mm-yyyy',
+                        fullWidth: true,
+                        size: 'medium',
+                        sx: {
+                          backgroundColor: '#fff',
+                          borderRadius: '0.75rem',
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '0.75rem',
+                          },
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#C67B49',
+                          },
+                          '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#E3A778',
+                          },
+                          '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#C67B49',
+                          },
+                        },
+                        error: Boolean(validationErrors.priorityFilingDate),
+                        helperText: validationErrors.priorityFilingDate || '',
+                      },
+                      popper: {
+                        sx: {
+                          '& .MuiPaper-root': {
+                            borderRadius: 2,
+                            boxShadow: '0 4px 24px 0 rgba(198, 123, 73, 0.10)',
+                          },
+                          '& .MuiPickersDay-root': {
+                            borderRadius: '8px',
+                            fontWeight: 500,
+                            '&.Mui-selected': {
+                              backgroundColor: '#C67B49',
+                              color: '#fff',
+                            },
+                            '&:hover': {
+                              backgroundColor: '#E3A778',
+                              color: '#fff',
+                            },
+                          },
+                          '& .MuiPickersCalendarHeader-label': {
+                            color: '#C67B49',
+                            fontWeight: 700,
+                            fontSize: '1.15rem',
+                          },
+                          '& .MuiPickersArrowSwitcher-root button': {
+                            color: '#C67B49',
+                          },
+                          '& .MuiPickersCalendarHeader-switchViewButton': {
+                            color: '#C67B49',
+                          },
+                          '& .MuiPickersDay-today': {
+                            border: '1.5px solid #C67B49',
+                            background: '#fff',
+                            color: '#C67B49',
+                          },
+                          '& .MuiPickersDay-root.Mui-disabled': {
+                            color: '#ccc',
+                          },
+                          '& .MuiPickersCalendarHeader-root': {
+                            background: '#F1E8E2',
+                            borderRadius: '12px 12px 0 0',
+                          },
+                          '& .MuiPickersDay-dayOutsideMonth': {
+                            color: '#bbb',
+                          },
+                          '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
+                            borderRadius: '8px',
+                            fontWeight: 600,
+                            '&.Mui-selected': {
+                              backgroundColor: '#C67B49',
+                              color: '#fff',
+                            },
+                            '&:hover': {
+                              backgroundColor: '#E3A778',
+                              color: '#fff',
+                            },
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
+              {/* File upload for certified copy (if needed) */}
+              <div className="mt-4">
+                <label className="block font-medium mb-1 text-gray-700">Certified Copy of Priority Document</label>
+                <div className="relative w-full mb-2">
+                  <input
+                    name="certifiedCopy"
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handleChange}
+                    className="hidden"
+                    id="certified-copy-upload"
+                  />
+                  <label
+                    htmlFor="certified-copy-upload"
+                    className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white text-[#C67B49] font-medium hover:bg-[#C67B49]/10 hover:border-[#C67B49]/40 transition-colors cursor-pointer text-center appearance-none"
+                    style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
+                  >
+                    Browse Files
+                  </label>
+                </div>
+                {form.certifiedCopy && (
+                  <p className="text-sm text-[#C67B49]/80 mt-2">Selected: {form.certifiedCopy.name}</p>
+                )}
+                {validationErrors.certifiedCopy && (
+                  <p className="text-red-500 text-xs mt-1">{validationErrors.certifiedCopy}</p>
+                )}
+                <p className="text-xs text-[#C67B49]/70 mt-1">Upload certified copy of priority document (PDF). Max 10MB.</p>
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -400,7 +531,7 @@ const PatentFiling = () => {
               onChange={handleChange}
               className={`w-full px-4 py-3 rounded-lg border ${
                 validationErrors.technicalField ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`}
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
               placeholder="Describe the technical field to which the invention relates"
               rows="4"
               required
@@ -416,7 +547,7 @@ const PatentFiling = () => {
               onChange={handleChange}
               className={`w-full px-4 py-3 rounded-lg border ${
                 validationErrors.backgroundArt ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`}
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
               placeholder="Describe the existing art, problems, and limitations that your invention addresses"
               rows="4"
               required
@@ -432,7 +563,7 @@ const PatentFiling = () => {
               onChange={handleChange}
               className={`w-full px-4 py-3 rounded-lg border ${
                 validationErrors.detailedDescription ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`}
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
               placeholder="Provide a detailed description of your invention, including all components, how they interact, and alternative embodiments"
               rows="6"
               required
@@ -448,7 +579,7 @@ const PatentFiling = () => {
               onChange={handleChange}
               className={`w-full px-4 py-3 rounded-lg border ${
                 validationErrors.advantageousEffects ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`}
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
               placeholder="Describe the advantages and improvements your invention provides over existing solutions"
               rows="4"
               required
@@ -519,7 +650,7 @@ const PatentFiling = () => {
               onChange={handleChange}
               className={`w-full px-4 py-3 rounded-lg border ${
                 validationErrors.knownPriorArt ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`}
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
               placeholder="Describe any known existing solutions or technologies related to your invention"
               rows="4"
               required
@@ -625,7 +756,7 @@ const PatentFiling = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={`flex-1 px-4 py-3 rounded-lg border ${
                   validationErrors.searchQuery ? 'border-red-500' : 'border-[#C67B49]/20'
-                } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`}
+                } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
                 placeholder="Enter keywords related to your invention"
               />
               <button
@@ -706,7 +837,7 @@ const PatentFiling = () => {
               onChange={(e) => setForm(f => ({ ...f, claims: e.target.value.split('\n') }))}
               className={`w-full px-4 py-3 rounded-lg border ${
                 validationErrors.claims ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`}
+              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
               placeholder="Enter patent claims (one per line)"
               rows="6"
               required

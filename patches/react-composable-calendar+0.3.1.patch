@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-composable-calendar/dist/extended-dayjs.js b/node_modules/react-composable-calendar/dist/extended-dayjs.js
+index 68eab0e..a40fa3f 100644
+--- a/node_modules/react-composable-calendar/dist/extended-dayjs.js
++++ b/node_modules/react-composable-calendar/dist/extended-dayjs.js
+@@ -1,6 +1,6 @@
+ import unextendedDayjs from "dayjs";
+-import timezone from "dayjs/plugin/timezone";
+-import utc from "dayjs/plugin/utc";
++import timezone from "dayjs/plugin/timezone,js";
++import utc from "dayjs/plugin/utc.js";
+ unextendedDayjs.extend(timezone);
+ unextendedDayjs.extend(utc);
+ export const dayjs = unextendedDayjs;

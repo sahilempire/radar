@@ -7,6 +7,10 @@ import AddressInput from '../components/AddressInput';
 import CustomSelect from '../components/CustomSelect';
 import { IoArrowBack } from 'react-icons/io5';
 import { IoInformationCircleOutline, IoBagHandleOutline, IoDocumentTextOutline, IoSparkles } from 'react-icons/io5';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 const steps = [
   'Basic Info',
@@ -66,6 +70,20 @@ const commerceTypes = [
   'Commerce between U.S. and foreign country',
 ];
 const countries = ['United States', 'India', 'United Kingdom', 'Canada', 'Australia', 'Other'];
+
+// Add these styles to your component
+const customStyles = {
+  calendar: {
+    base: "w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjMiIHk9IjQiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgcng9IjIiIHJ5PSIyIj48L3JlY3Q+PGxpbmUgeDE9IjE2IiB5MT0iMiIgeDI9IjE2IiB5Mj0iNiI+PC9saW5lPjxsaW5lIHgxPSI4IiB5MT0iMiIgeDI9IjgiIHkyPSI2Ij48L2xpbmU+PGxpbmUgeDE9IjMiIHkxPSIxMCIgeDI9IjIxIiB5Mj0iMTAiPjwvbGluZT48L3N2Zz4=')] bg-no-repeat bg-[right_1rem_center]",
+    hover: "hover:border-[#C67B49]/40",
+    focus: "focus:border-[#C67B49] focus:ring-2 focus:ring-[#C67B49]/20",
+  },
+  fileUpload: {
+    container: "relative w-full mb-4",
+    input: "hidden",
+    button: "w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white text-[#C67B49] font-medium hover:bg-[#C67B49]/10 hover:border-[#C67B49]/40 transition-colors cursor-pointer text-center appearance-none [-webkit-appearance:none] [-moz-appearance:none]",
+  }
+};
 
 const TrademarkFiling = () => {
   const navigate = useNavigate();
@@ -450,15 +468,28 @@ const TrademarkFiling = () => {
             </div>
             {['Design Mark (logo or stylized text)', 'Color Mark'].includes(form.markType) && (
               <>
-                <div>
-                  <label className="block font-medium mb-1 text-gray-700">Mark Image Upload <span className="text-[#C67B49]">*</span></label>
-                  <input 
-                    name="logo" 
-                    type="file" 
-                    accept="image/jpeg,image/png,image/svg+xml" 
-                    onChange={handleChange} 
-                    className={`block w-full text-gray-700 ${validationErrors.logo ? 'border-red-500' : ''}`} 
-                  />
+                <div className="mb-4">
+                  <label className="block font-medium mb-6 text-gray-700">Mark Image Upload <span className="text-[#C67B49]">*</span></label>
+                  <div className={customStyles.fileUpload.container}>
+                    <input 
+                      name="logo" 
+                      type="file" 
+                      accept="image/jpeg,image/png,image/svg+xml" 
+                      onChange={handleChange} 
+                      className={customStyles.fileUpload.input}
+                      id="logo-upload"
+                    />
+                    <label 
+                      htmlFor="logo-upload" 
+                      className={customStyles.fileUpload.button}
+                      style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
+                    >
+                      Browse Files
+                    </label>
+                  </div>
+                  {form.logo && (
+                    <p className="text-sm text-[#C67B49]/80 mt-2">Selected: {form.logo.name}</p>
+                  )}
                   {validationErrors.logo && (
                     <p className="text-red-500 text-xs mt-1">{validationErrors.logo}</p>
                   )}
@@ -471,17 +502,9 @@ const TrademarkFiling = () => {
                       name="logoDescription" 
                       value={form.logoDescription} 
                       onChange={handleChange} 
-                      className={`w-full px-4 py-3 rounded-lg border ${validationErrors.logoDescription ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`} 
+                      className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" 
                       placeholder="Describe mark elements (color, shape, stylization)" 
                     />
-                    <button 
-                      type="button" 
-                      className="px-3 py-1 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all" 
-                      onClick={() => handleAISuggest('logoDescription')} 
-                      disabled={aiLoading === 'logoDescription'}
-                    >
-                      {aiLoading === 'logoDescription' ? 'Suggesting...' : 'AI Suggest'}
-                    </button>
                   </div>
                   {validationErrors.logoDescription && (
                     <p className="text-red-500 text-xs mt-1">{validationErrors.logoDescription}</p>
@@ -598,7 +621,7 @@ const TrademarkFiling = () => {
                   disabled={aiLoading === 'businessDescription'}
                 >
                   <IoSparkles className="w-4 h-4" />
-                  {aiLoading === 'businessDescription' ? 'Suggesting...' : 'AI Suggest'}
+                  {aiLoading === 'businessDescription' ? 'Suggesting...' : ''}
                 </button>
               </div>
             </div>
@@ -619,7 +642,7 @@ const TrademarkFiling = () => {
                   disabled={aiLoading === 'goodsServices'}
                 >
                   <IoSparkles className="w-4 h-4" />
-                  {aiLoading === 'goodsServices' ? 'Analyzing...' : 'AI Classes'}
+                  {aiLoading === 'goodsServices' ? 'Analyzing...' : ''}
                 </button>
               </div>
               
@@ -653,73 +676,194 @@ const TrademarkFiling = () => {
               )}
             </div>
             {isUseInCommerce && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block font-medium mb-1 text-gray-700">Date of First Use Anywhere <span className="text-[#C67B49]">*</span></label>
-                  <input 
-                    name="firstUseAnywhere" 
-                    type="date" 
-                    value={form.firstUseAnywhere} 
-                    onChange={handleChange} 
-                    className={`w-full px-4 py-3 rounded-lg border ${validationErrors.firstUseAnywhere ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`} 
-                  />
-                  {validationErrors.firstUseAnywhere && (
-                    <p className="text-red-500 text-xs mt-1">{validationErrors.firstUseAnywhere}</p>
-                  )}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block font-medium mb-1 text-gray-700">Date of First Use Anywhere <span className="text-[#C67B49]">*</span></label>
+                    <DatePicker
+                      value={form.firstUseAnywhere ? dayjs(form.firstUseAnywhere) : null}
+                      onChange={date => setForm(f => ({ ...f, firstUseAnywhere: date ? date.format('YYYY-MM-DD') : '' }))}
+                      disableFuture
+                      format="DD-MM-YYYY"
+                      slotProps={{
+                        textField: {
+                          placeholder: 'dd-mm-yyyy',
+                          fullWidth: true,
+                          size: 'medium',
+                          sx: {
+                            backgroundColor: '#fff',
+                            borderRadius: '0.75rem',
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: '0.75rem',
+                            },
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#C67B49',
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#E3A778',
+                            },
+                            '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#C67B49',
+                            },
+                          },
+                          error: Boolean(validationErrors.firstUseAnywhere),
+                          helperText: validationErrors.firstUseAnywhere || '',
+                        },
+                        popper: {
+                          sx: {
+                            '& .MuiPaper-root': {
+                              borderRadius: 2,
+                              boxShadow: '0 4px 24px 0 rgba(198, 123, 73, 0.10)',
+                            },
+                            '& .MuiPickersDay-root': {
+                              borderRadius: '8px',
+                              fontWeight: 500,
+                              '&.Mui-selected': {
+                                backgroundColor: '#C67B49',
+                                color: '#fff',
+                              },
+                              '&:hover': {
+                                backgroundColor: '#E3A778',
+                                color: '#fff',
+                              },
+                            },
+                            '& .MuiPickersCalendarHeader-label': {
+                              color: '#C67B49',
+                              fontWeight: 700,
+                              fontSize: '1.15rem',
+                            },
+                            '& .MuiPickersArrowSwitcher-root button': {
+                              color: '#C67B49',
+                            },
+                            '& .MuiPickersCalendarHeader-switchViewButton': {
+                              color: '#C67B49',
+                            },
+                            '& .MuiPickersDay-today': {
+                              border: '1.5px solid #C67B49',
+                              background: '#fff',
+                              color: '#C67B49',
+                            },
+                            '& .MuiPickersDay-root.Mui-disabled': {
+                              color: '#ccc',
+                            },
+                            '& .MuiPickersCalendarHeader-root': {
+                              background: '#F1E8E2',
+                              borderRadius: '12px 12px 0 0',
+                            },
+                            '& .MuiPickersDay-dayOutsideMonth': {
+                              color: '#bbb',
+                            },
+                            '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
+                              borderRadius: '8px',
+                              fontWeight: 600,
+                              '&.Mui-selected': {
+                                backgroundColor: '#C67B49',
+                                color: '#fff',
+                              },
+                              '&:hover': {
+                                backgroundColor: '#E3A778',
+                                color: '#fff',
+                              },
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-medium mb-1 text-gray-700">Date of First Use in Commerce <span className="text-[#C67B49]">*</span></label>
+                    <DatePicker
+                      value={form.firstUseCommerce ? dayjs(form.firstUseCommerce) : null}
+                      onChange={date => setForm(f => ({ ...f, firstUseCommerce: date ? date.format('YYYY-MM-DD') : '' }))}
+                      disableFuture
+                      format="DD-MM-YYYY"
+                      slotProps={{
+                        textField: {
+                          placeholder: 'dd-mm-yyyy',
+                          fullWidth: true,
+                          size: 'medium',
+                          sx: {
+                            backgroundColor: '#fff',
+                            borderRadius: '0.75rem',
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: '0.75rem',
+                            },
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#C67B49',
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#E3A778',
+                            },
+                            '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#C67B49',
+                            },
+                          },
+                          error: Boolean(validationErrors.firstUseCommerce),
+                          helperText: validationErrors.firstUseCommerce || '',
+                        },
+                        popper: {
+                          sx: {
+                            '& .MuiPaper-root': {
+                              borderRadius: 2,
+                              boxShadow: '0 4px 24px 0 rgba(198, 123, 73, 0.10)',
+                            },
+                            '& .MuiPickersDay-root': {
+                              borderRadius: '8px',
+                              fontWeight: 500,
+                              '&.Mui-selected': {
+                                backgroundColor: '#C67B49',
+                                color: '#fff',
+                              },
+                              '&:hover': {
+                                backgroundColor: '#E3A778',
+                                color: '#fff',
+                              },
+                            },
+                            '& .MuiPickersCalendarHeader-label': {
+                              color: '#C67B49',
+                              fontWeight: 700,
+                              fontSize: '1.15rem',
+                            },
+                            '& .MuiPickersArrowSwitcher-root button': {
+                              color: '#C67B49',
+                            },
+                            '& .MuiPickersCalendarHeader-switchViewButton': {
+                              color: '#C67B49',
+                            },
+                            '& .MuiPickersDay-today': {
+                              border: '1.5px solid #C67B49',
+                              background: '#fff',
+                              color: '#C67B49',
+                            },
+                            '& .MuiPickersDay-root.Mui-disabled': {
+                              color: '#ccc',
+                            },
+                            '& .MuiPickersCalendarHeader-root': {
+                              background: '#F1E8E2',
+                              borderRadius: '12px 12px 0 0',
+                            },
+                            '& .MuiPickersDay-dayOutsideMonth': {
+                              color: '#bbb',
+                            },
+                            '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
+                              borderRadius: '8px',
+                              fontWeight: 600,
+                              '&.Mui-selected': {
+                                backgroundColor: '#C67B49',
+                                color: '#fff',
+                              },
+                              '&:hover': {
+                                backgroundColor: '#E3A778',
+                                color: '#fff',
+                              },
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="block font-medium mb-1 text-gray-700">Date of First Use in Commerce <span className="text-[#C67B49]">*</span></label>
-                  <input 
-                    name="firstUseCommerce" 
-                    type="date" 
-                    value={form.firstUseCommerce} 
-                    onChange={handleChange} 
-                    className={`w-full px-4 py-3 rounded-lg border ${validationErrors.firstUseCommerce ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`} 
-                  />
-                  {validationErrors.firstUseCommerce && (
-                    <p className="text-red-500 text-xs mt-1">{validationErrors.firstUseCommerce}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block font-medium mb-1 text-gray-700">Type of Commerce <span className="text-[#C67B49]">*</span></label>
-                  <CustomSelect
-                    name="typeOfCommerce"
-                    value={form.typeOfCommerce}
-                    onChange={handleChange}
-                    options={commerceTypes}
-                    placeholder="Select type of commerce"
-                    error={validationErrors.typeOfCommerce}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block font-medium mb-1 text-gray-700">Describe How Mark is Used <span className="text-[#C67B49]">*</span></label>
-                  <textarea 
-                    name="markUsage" 
-                    value={form.markUsage} 
-                    onChange={handleChange} 
-                    className={`w-full px-4 py-3 rounded-lg border ${validationErrors.markUsage ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`} 
-                    placeholder="How the mark appears on goods, services, advertising, etc." 
-                  />
-                  {validationErrors.markUsage && (
-                    <p className="text-red-500 text-xs mt-1">{validationErrors.markUsage}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block font-medium mb-1 text-gray-700">Specimen of Use <span className="text-[#C67B49]">*</span></label>
-                  <input 
-                    name="specimen" 
-                    type="file" 
-                    accept="image/jpeg,image/png,application/pdf" 
-                    onChange={handleChange} 
-                    className={`block w-full text-gray-700 ${validationErrors.specimen ? 'border-red-500' : ''}`} 
-                  />
-                  {validationErrors.specimen && (
-                    <p className="text-red-500 text-xs mt-1">{validationErrors.specimen}</p>
-                  )}
-                  <p className="text-xs text-[#C67B49]/70 mt-1">Upload marketing materials, website screenshots, product packaging, etc. (JPEG, PNG, PDF). Max 10MB.</p>
-                </div>
-              </div>
+              </LocalizationProvider>
             )}
           </>
         )}

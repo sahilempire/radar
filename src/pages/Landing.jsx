@@ -33,8 +33,12 @@ const Landing = () => {
       {/* Navbar */}
       <nav className="flex items-center justify-between py-6 px-4 max-w-7xl mx-auto">
         <div className="flex items-center">
-          <span className="text-[#C67B49] text-3xl font-bold">R</span>
-          <span className="text-2xl font-medium ml-2">Radar</span>
+          <Link to="/">
+            <div className="flex items-center">
+              <span className="text-[#C67B49] text-3xl font-bold">R</span>
+              <span className="text-2xl font-medium ml-2">Radar</span>
+            </div>
+          </Link>
         </div>
         <div className="flex gap-4">
           <Link to="/signin">
@@ -44,7 +48,7 @@ const Landing = () => {
           </Link>
           <Link to="/signup">
             <button className="bg-[#C67B49] hover:bg-[#C67B49]/90 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
-              Get Started Free <ArrowRight className="h-4 w-4" />
+              Get Started <ArrowRight className="h-4 w-4" />
             </button>
           </Link>
         </div>

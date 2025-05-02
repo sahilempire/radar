@@ -14,6 +14,8 @@ import Landing from './pages/Landing';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import ResponsibleAI from './pages/ResponsibleAI';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
 
 function App() {
   return (
@@ -24,6 +26,10 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/responsible-ai" element={<ResponsibleAI />} />
+        
+        {/* Authentication Routes */}
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
         
         {/* Trademark Routes */}
         <Route path="/dashboard/trademark" element={

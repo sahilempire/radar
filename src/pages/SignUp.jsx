@@ -55,32 +55,32 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-light px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white text-gray-800 px-4">
       <img src={logoStacked} alt="Radar Logo" className="h-20 w-auto mb-8" />
-      <div className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-primary/20">
-        <h1 className="text-2xl font-bold mb-6 text-center text-light">Create Your Radar Account</h1>
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-[#C67B49]/20">
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Create Your Radar Account</h1>
         {success ? (
-          <div className="text-green-400 text-center mb-4">
+          <div className="text-green-500 text-center mb-4">
             Account created! Please check your email to confirm your account before logging in.
           </div>
         ) : (
           <>
             <form className="space-y-5" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-sm font-medium mb-1 text-accent">Full Name</label>
-                <input name="name" type="text" className="w-full px-4 py-3 rounded-lg bg-background border border-primary/30 text-light focus:outline-none focus:ring-2 focus:ring-primary/60 transition" placeholder="Your Name" value={form.name} onChange={handleChange} />
+                <label className="block text-sm font-medium mb-1 text-gray-600">Full Name</label>
+                <input name="name" type="text" className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-[#C67B49]/30 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C67B49]/60 transition" placeholder="Your Name" value={form.name} onChange={handleChange} />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 text-accent">Email</label>
-                <input name="email" type="email" className="w-full px-4 py-3 rounded-lg bg-background border border-primary/30 text-light focus:outline-none focus:ring-2 focus:ring-primary/60 transition" placeholder="you@email.com" value={form.email} onChange={handleChange} />
+                <label className="block text-sm font-medium mb-1 text-gray-600">Email</label>
+                <input name="email" type="email" className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-[#C67B49]/30 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C67B49]/60 transition" placeholder="you@email.com" value={form.email} onChange={handleChange} />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 text-accent">Password</label>
+                <label className="block text-sm font-medium mb-1 text-gray-600">Password</label>
                 <div className="relative">
                   <input
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    className="w-full px-4 py-3 pr-12 rounded-lg bg-background border border-primary/30 text-light focus:outline-none focus:ring-2 focus:ring-primary/60 transition"
+                    className="w-full px-4 py-3 pr-12 rounded-lg bg-gray-50 border border-[#C67B49]/30 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C67B49]/60 transition"
                     placeholder="••••••••"
                     value={form.password}
                     onChange={handleChange}
@@ -88,7 +88,7 @@ const SignUp = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-accent"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
                     tabIndex={-1}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
@@ -108,12 +108,12 @@ const SignUp = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 text-accent">Confirm Password</label>
+                <label className="block text-sm font-medium mb-1 text-gray-600">Confirm Password</label>
                 <div className="relative">
                   <input
                     name="confirm"
                     type={showConfirm ? 'text' : 'password'}
-                    className="w-full px-4 py-3 pr-12 rounded-lg bg-background border border-primary/30 text-light focus:outline-none focus:ring-2 focus:ring-primary/60 transition"
+                    className="w-full px-4 py-3 pr-12 rounded-lg bg-gray-50 border border-[#C67B49]/30 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C67B49]/60 transition"
                     placeholder="••••••••"
                     value={form.confirm}
                     onChange={handleChange}
@@ -121,7 +121,7 @@ const SignUp = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirm((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-accent"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
                     tabIndex={-1}
                     aria-label={showConfirm ? 'Hide password' : 'Show password'}
                   >
@@ -140,25 +140,25 @@ const SignUp = () => {
                   </button>
                 </div>
               </div>
-              {error && <div className="text-red-400 text-sm text-center">{error}</div>}
-              <button type="submit" disabled={loading} className="w-full py-3 rounded-lg font-semibold bg-primary text-light shadow hover:shadow-primary/30 transition-all duration-200 mt-2 disabled:opacity-60">{loading ? 'Creating Account...' : 'Create Account'}</button>
+              {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+              <button type="submit" disabled={loading} className="w-full py-3 rounded-lg font-semibold bg-[#C67B49] text-white shadow hover:shadow-[#C67B49]/30 transition-all duration-200 mt-2 disabled:opacity-60">{loading ? 'Creating Account...' : 'Create Account'}</button>
             </form>
             <div className="my-6 flex items-center gap-2">
-              <div className="flex-1 h-px bg-primary/30" />
-              <span className="text-xs text-accent">or sign up with</span>
-              <div className="flex-1 h-px bg-primary/30" />
+              <div className="flex-1 h-px bg-[#C67B49]/30" />
+              <span className="text-xs text-gray-500">or sign up with</span>
+              <div className="flex-1 h-px bg-[#C67B49]/30" />
             </div>
             <div className="flex justify-center mb-4">
               <button
                 onClick={() => handleOAuth('google')}
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-background/80 border border-primary/40 text-light font-semibold shadow hover:bg-primary/10 hover:text-primary hover:border-primary transition-all duration-200 text-base"
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-gray-50 border border-[#C67B49]/40 text-gray-800 font-semibold shadow hover:bg-[#C67B49]/10 hover:text-[#C67B49] hover:border-[#C67B49] transition-all duration-200 text-base"
               >
                 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' className="w-5 h-5"><g><path fill="#4285F4" d="M24 9.5c3.54 0 6.7 1.22 9.19 3.23l6.87-6.87C35.64 2.39 30.18 0 24 0 14.82 0 6.73 5.48 2.69 13.44l8.01 6.22C12.33 13.13 17.68 9.5 24 9.5z"/><path fill="#34A853" d="M46.1 24.55c0-1.64-.15-3.22-.42-4.74H24v9.01h12.42c-.54 2.9-2.18 5.36-4.65 7.01l7.19 5.6C43.98 37.13 46.1 31.36 46.1 24.55z"/><path fill="#FBBC05" d="M10.7 28.66c-1.01-2.99-1.01-6.23 0-9.22l-8.01-6.22C.68 17.82 0 20.81 0 24c0 3.19.68 6.18 1.89 8.78l8.81-6.89z"/><path fill="#EA4335" d="M24 48c6.18 0 11.36-2.05 15.15-5.57l-7.19-5.6c-2.01 1.35-4.59 2.15-7.96 2.15-6.32 0-11.67-3.63-13.3-8.66l-8.81 6.89C6.73 42.52 14.82 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></g></svg>
                 <span>Sign up with Google</span>
               </button>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <Link to="/signin" className="text-accent hover:underline">Already have an account?</Link>
+              <Link to="/signin" className="text-[#C67B49] hover:underline">Already have an account?</Link>
             </div>
           </>
         )}

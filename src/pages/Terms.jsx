@@ -8,8 +8,12 @@ const Terms = () => {
       {/* Navbar */}
       <nav className="flex items-center justify-between py-6 px-4 max-w-7xl mx-auto">
         <div className="flex items-center">
-          <span className="text-[#C67B49] text-3xl font-bold">R</span>
-          <span className="text-2xl font-medium ml-2">Radar</span>
+          <Link to="/">
+            <div className="flex items-center">
+              <span className="text-[#C67B49] text-3xl font-bold">R</span>
+              <span className="text-2xl font-medium ml-2">Radar</span>
+            </div>
+          </Link>
         </div>
         <div className="flex gap-4">
           <Link to="/signin">

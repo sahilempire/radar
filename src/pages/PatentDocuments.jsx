@@ -108,13 +108,28 @@ const PatentDocuments = () => {
     );
   };
 
-  const handleContinueToCompliance = () => {
-    navigate('/dashboard/patent/compliance', { 
-      state: { 
-        submissionData: location.state.submissionData,
-        documents: documents
-      } 
-    });
+  const handleContinueToUpload = () => {
+    // Try to get filingId from multiple sources
+    const filingId = location.state?.filingId 
+      || location.state?.submissionData?.id
+      || documents?.id;
+
+    if (filingId) {
+      navigate(`/dashboard/patent/documents/${filingId}/upload`, {
+        state: {
+          submissionData: location.state?.submissionData,
+          documents: documents
+        }
+      });
+    } else {
+      // If no filingId, use the simpler route
+      navigate('/dashboard/patent/documents/upload', {
+        state: {
+          submissionData: location.state?.submissionData,
+          documents: documents
+        }
+      });
+    }
   };
 
   if (isLoading) {
@@ -313,13 +328,13 @@ const PatentDocuments = () => {
           </div>
         </div>
 
-        {/* Continue to Compliance Button */}
+        {/* Continue to Upload Button */}
         <div className="mt-8 flex justify-end">
           <button 
             className="px-6 py-2 bg-[#C67B49] text-white rounded-lg hover:bg-[#C67B49]/90 transition-colors flex items-center gap-2" 
-            onClick={handleContinueToCompliance}
+            onClick={handleContinueToUpload}
           >
-            <span>Continue to Compliance Check</span>
+            <span>Continue to Upload</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
             </svg>

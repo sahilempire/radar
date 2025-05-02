@@ -23,6 +23,7 @@ import MainLayout from './components/MainLayout';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import ResponsibleAI from './pages/ResponsibleAI';
+import PatentUploadDocuments from './pages/PatentUploadDocuments';
 
 function App() {
   return (
@@ -59,6 +60,16 @@ function App() {
         <Route path="/dashboard/patent/documents" element={
           <MainLayout>
             <PatentDocuments />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/patent/documents/:id/upload" element={
+          <MainLayout>
+            <PatentUploadDocuments />
+          </MainLayout>
+        } />
+        <Route path="/dashboard/patent/documents/upload" element={
+          <MainLayout>
+            <PatentUploadDocuments />
           </MainLayout>
         } />
         <Route path="/dashboard/patent/compliance" element={

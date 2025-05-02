@@ -70,94 +70,26 @@ IMPORTANT:
 1. The approvalPercentage should be based on the overall strength of the application, completeness of documents, and compliance with USPTO requirements.
 2. Respond ONLY with the JSON object, no additional text or explanation.`;
 
-    // Mock response for now - in production this would call an AI service
-    const mockResponse = {
-      overview: {
-        status: "Ready for Filing",
-        summary: "Patent application meets basic USPTO requirements",
-        nextSteps: [
-          "Review generated documents for accuracy",
-          "Prepare filing fees",
-          "Submit application to USPTO"
-        ],
-        approvalPercentage: 85
+    // Call the AI analysis endpoint
+    const response = await fetch('http://localhost:3001/api/analyze', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      applicationReview: {
-        strengths: [
-          "Clear technical description",
-          "Well-defined claims",
-          "Comprehensive drawings"
-        ],
-        weaknesses: [
-          "Some claims could be more specific",
-          "Additional examples recommended"
-        ],
-        recommendations: [
-          "Add more specific examples in the description",
-          "Review claim dependencies"
-        ]
-      },
-      documentAnalysis: {
-        requiredDocuments: [
-          "Patent Application Form",
-          "Specification Document",
-          "Claims",
-          "Abstract",
-          "Drawings",
-          "Declaration"
-        ],
-        missingDocuments: [],
-        documentStatus: {
-          patentApplication: "Complete",
-          specification: "Complete",
-          claims: "Complete",
-          abstract: "Complete",
-          drawings: "Complete",
-          declaration: "Complete"
-        }
-      },
-      filingStrategy: {
-        jurisdictionOrder: [
-          "United States (USPTO)",
-          "European Patent Office",
-          "Japan Patent Office"
-        ],
-        timeline: {
-          filingDate: new Date().toISOString().split('T')[0],
-          firstOfficeAction: "6-8 months",
-          estimatedRegistration: "18-24 months"
-        },
-        risks: [
-          "Potential prior art conflicts",
-          "Claim scope limitations"
-        ],
-        opportunities: [
-          "Strong market potential",
-          "Novel technical solution"
-        ]
-      },
-      recommendations: [
-        {
-          title: "Enhance Claims",
-          description: "Consider adding dependent claims for better protection",
-          priority: "high"
-        },
-        {
-          title: "Technical Description",
-          description: "Add more examples in the specification",
-          priority: "medium"
-        },
-        {
-          title: "International Filing",
-          description: "Consider PCT application for broader protection",
-          priority: "low"
-        }
-      ]
-    };
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get AI analysis');
+    }
+
+    const data = await response.json();
+    // Parse the nested response structure
+    const parsedResponse = JSON.parse(data.content[0].text);
 
     return {
       success: true,
-      ...mockResponse
+      ...parsedResponse
     };
   } catch (error) {
     console.error('Error getting patent filing preparation analysis:', error);

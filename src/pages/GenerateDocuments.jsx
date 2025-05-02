@@ -140,7 +140,7 @@ const GenerateDocuments = () => {
           </div>
           
           <div className="bg-[#F1E8E2] rounded-lg p-8 mb-10">
-            <div className="max-w-3xl mx-auto space-y-6">
+            <div className="max-w-3xl mx-auto space-y-3">
               <div className="flex items-start space-x-2">
                 <div className="flex-shrink-0 mt-1">
                   <svg className="w-6 h-6 text-[#C67B49]" fill="currentColor" viewBox="0 0 24 24">

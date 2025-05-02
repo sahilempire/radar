@@ -10,13 +10,20 @@ import ComplianceChecker from './pages/ComplianceChecker';
 import PreFiling from './pages/PreFiling';
 import Dashboard from './pages/Dashboard';
 import GenerateDocuments from './pages/GenerateDocuments';
+import Landing from './pages/Landing';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import ResponsibleAI from './pages/ResponsibleAI';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Landing />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/responsible-ai" element={<ResponsibleAI />} />
         
         {/* Trademark Routes */}
         <Route path="/dashboard/trademark" element={

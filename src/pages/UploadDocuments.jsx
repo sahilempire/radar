@@ -109,6 +109,8 @@ function UploadDocuments() {
             throw new Error(result.error || 'Failed to upload file');
           }
         }
+        // Clear the selected category after successful upload
+        setSelectedCategory('');
       } catch (error) {
         console.error('Error in handleFiles:', error);
         toast.error(`Error uploading file: ${error.message}`);
@@ -260,10 +262,29 @@ function UploadDocuments() {
                 <p className="text-gray-500 text-center py-4">No documents uploaded yet</p>
               )}
             </div>
+
+            {/* Check Compliance Button */}
+            <div className="mt-6 flex justify-between items-center">
+              <button
+                onClick={() => navigate(-1)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              >
+                Back
+              </button>
+              <button
+                onClick={() => navigate(`/dashboard/compliance/${filingId}`)}
+                className="px-6 py-2 bg-[#C67B49] text-white rounded-lg hover:bg-[#C67B49]/90 flex items-center gap-2"
+              >
+                Check Compliance
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           {/* Right Side - Required Documents */}
-          <div className="lg:col-span-1">
+          {/* <div className="lg:col-span-1">
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <h2 className="text-xl font-semibold mb-6">Required Documents</h2>
               <div className="space-y-6">
@@ -271,7 +292,7 @@ function UploadDocuments() {
                   <h3 className="text-lg font-medium mb-4">Document Checklist</h3>
                   <ul className="space-y-4">
                     {documentCategories.filter(cat => cat.required).map(category => {
-                      const isUploaded = uploadedFiles.some(file => file.category === category.id && file.id);
+                      const isUploaded = uploadedFiles.some(file => file.category === category.id);
                       return (
                         <li 
                           key={category.id} 
@@ -322,25 +343,7 @@ function UploadDocuments() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="mt-8 flex justify-between">
-          <button
-            onClick={() => navigate(-1)}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-          >
-            Back
-          </button>
-          <button
-            onClick={() => navigate(`/dashboard/compliance/${filingId}`)}
-            className="px-6 py-2 bg-[#C67B49] text-white rounded-lg hover:bg-[#C67B49]/90 flex items-center gap-2"
-          >
-            Check Compliance
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          </div> */}
         </div>
       </div>
     </div>

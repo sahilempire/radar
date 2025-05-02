@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { uploadSupportingFile, deleteSupportingFile, initializeStorage, getFiling } from '../services';
 import ProgressSidebar from '../components/ProgressSidebar';
+import CustomSelect from '../components/CustomSelect';
 import { IoArrowBack } from 'react-icons/io5';
 function UploadDocuments() {
   const { filingId } = useParams();
@@ -147,7 +148,7 @@ function UploadDocuments() {
           <div className='flex items-center gap-2 mb-6'>
             <button 
               type="button"
-              className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
+              className="p-2 text-gray-600 hover:text-[#C67B49] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
               onClick={() => navigate(-1)}
               aria-label="Go back"
             >
@@ -169,22 +170,18 @@ function UploadDocuments() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Select document category
                 </label>
-                <select
+                <CustomSelect
+                  name="documentCategory"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                >
-                  <option value="">Select a category</option>
-                  {documentCategories.map(category => (
-                    <option key={category.id} value={category.id}>
-                      {category.name} {category.required ? '(Required)' : ''}
-                    </option>
-                  ))}
-                </select>
+                  options={documentCategories.map(category => `${category.name} ${category.required ? '(Required)' : ''}`)}
+                  placeholder="Select a category"
+                  className="w-full"
+                />
               </div>
 
               <div
-                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-[#C67B49] transition-colors"
                 onDrop={handleFileDrop}
                 onDragOver={(e) => e.preventDefault()}
                 onClick={() => document.getElementById('file-input').click()}
@@ -316,7 +313,7 @@ function UploadDocuments() {
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
-                      className="bg-primary h-2 rounded-full transition-all duration-300" 
+                      className="bg-[#C67B49] h-2 rounded-full transition-all duration-300" 
                       style={{ 
                         width: `${Math.min(100, (uploadedFiles.filter(file => documentCategories.find(cat => cat.id === file.category)?.required).length / documentCategories.filter(cat => cat.required).length) * 100)}%` 
                       }}
@@ -337,7 +334,7 @@ function UploadDocuments() {
           </button>
           <button
             onClick={() => navigate(`/dashboard/compliance/${filingId}`)}
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 flex items-center gap-2"
+            className="px-6 py-2 bg-[#C67B49] text-white rounded-lg hover:bg-[#C67B49]/90 flex items-center gap-2"
           >
             Check Compliance
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

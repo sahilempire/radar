@@ -98,7 +98,7 @@ const AddressInput = ({ value, onChange, error, placeholder }) => {
 
           .pac-matched {
             font-weight: 600;
-            color: #0080ff;
+            color: #F1E8E2;
             position: relative;
           }
 
@@ -235,14 +235,14 @@ const AddressInput = ({ value, onChange, error, placeholder }) => {
         value={inputValue}
         onChange={handleInputChange}
         className={`w-full px-4 py-3 rounded-lg border ${
-          error ? 'border-red-500' : 'border-[#0080ff]/20'
-        } bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
+          error ? 'border-red-500' : 'border-[#F1E8E2]/20'
+        } bg-white focus:outline-none focus:ring-2 focus:ring-[#F1E8E2]/40 text-gray-700`}
         placeholder={placeholder}
         disabled={isLoading}
       />
       {isLoading && (
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-          <div className="animate-spin rounded-full h-5 w-5 border-2 border-[#0080ff]/20 border-t-[#0080ff]"></div>
+          <div className="animate-spin rounded-full h-5 w-5 border-2 border-[#F1E8E2]/20 border-t-[#F1E8E2]"></div>
         </div>
       )}
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}

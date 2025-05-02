@@ -47,7 +47,7 @@ function FilingPrep() {
           <div className="flex items-center gap-2 mb-6">
             <button
               type="button"
-              className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
+              className="p-2 text-gray-600 hover:text-[#C67B49] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
               onClick={() => navigate(-1)}
               aria-label="Go back"
             >
@@ -154,17 +154,17 @@ function FilingPrep() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">Filing Calendar</h2>
                 <p className="text-gray-600 mb-6">Important dates for your trademark application</p>
                 <div className="space-y-6">
-                  <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="p-4 bg-neutral-50 rounded-lg">
                     <h3 className="font-medium text-gray-900">Estimated Filing Date</h3>
                     <p className="text-sm text-gray-600 mb-2">When your application will be submitted</p>
                     <p className="text-primary font-medium text-lg">{formatDate(filingDate)}</p>
                   </div>
-                  <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="p-4 bg-neutral-50 rounded-lg">
                     <h3 className="font-medium text-gray-900">Estimated First Office Action</h3>
                     <p className="text-sm text-gray-600 mb-2">Initial review by the patent office</p>
                     <p className="text-primary font-medium text-lg">3-4 months</p>
                   </div>
-                  <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="p-4 bg-neutral-50 rounded-lg">
                     <h3 className="font-medium text-gray-900">Estimated Registration Time</h3>
                     <p className="text-sm text-gray-600 mb-2">Total time for application approval</p>
                     <p className="text-primary font-medium text-lg">9-12 months</p>
@@ -266,7 +266,7 @@ function FilingPrep() {
                   </div>
 
                   {/* Overview Section */}
-                  <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="p-4 bg-neutral-50 rounded-lg">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Overview</h3>
                     <p className="text-gray-600 mb-4">{analysis.overview.summary}</p>
                     <div className="space-y-2">

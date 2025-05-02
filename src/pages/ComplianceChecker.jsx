@@ -75,7 +75,7 @@ function ComplianceChecker() {
           <div className="flex items-center gap-2 mb-6">
             <button
               type="button"
-              className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
+              className="p-2 text-gray-600 hover:text-[#F1E8E2] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
               onClick={() => navigate(-1)}
               aria-label="Go back"
             >
@@ -103,7 +103,7 @@ function ComplianceChecker() {
                 <h3 className="text-xl font-medium text-gray-900">Ready to check compliance of your trademark application</h3>
               </div>
               
-              <div className="bg-blue-50 rounded-lg p-8 mb-10">
+              <div className="bg-neutral-50 rounded-lg p-8 mb-10">
                 <div className="max-w-3xl mx-auto space-y-6">
                   <div className="flex items-start space-x-2">
                     <div className="flex-shrink-0 mt-1">
@@ -280,7 +280,7 @@ function ComplianceChecker() {
                   className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-colors duration-200 ${
                     isLoading
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : 'bg-blue-50 text-primary hover:bg-blue-100'
+                      : 'bg-neutral-50 text-primary hover:bg-blue-100'
                   }`}
                 >
                   {isLoading ? (

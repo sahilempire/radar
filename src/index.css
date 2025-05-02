@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --primary-color: #C67B49;
+  --secondary-color: #F1E8E2;
+  --color-primary: #C67B49;
+  --color-primary-light: #E3A778;
+  --color-primary-dark: #8B5E3C;
+  --color-warm-50: #C67B49/10;
+  --color-warm-100: #C67B49/20;
+  --color-warm-200: #C67B49/40;
+  --color-warm-300: #C67B49/60;
+  --color-warm-400: #C67B49/70;
+  --color-warm-500: #C67B49/80;
+  --color-warm-600: #C67B49/90;
+}

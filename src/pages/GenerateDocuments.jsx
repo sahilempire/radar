@@ -96,7 +96,7 @@ const GenerateDocuments = () => {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={handleBack}
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="px-6 py-2 bg-[#C67B49] text-white rounded-lg hover:bg-[#C67B49]/90 transition-colors"
           >
             Back to Trademark Filing
           </button>
@@ -112,36 +112,38 @@ const GenerateDocuments = () => {
           <div className="flex items-center gap-2 mb-6">
             <button
               type="button"
-              className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
+              className="p-2 text-gray-600 hover:text-[#C67B49] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
               onClick={() => navigate(-1)}
               aria-label="Go back"
             >
               <IoArrowBack className="w-6 h-6" />
             </button>
-            <h1 className="text-2xl font-bold text-primary">Generate Your Documents</h1>
+            <h1 className="text-2xl font-bold text-primary">Document Generation</h1>
           </div>
-          <p className="text-gray-600 mt-2">Our AI will analyze your application data and generate all required documents</p>
+          <p className="text-gray-600 mt-2">Generate and manage filing-ready documents for your trademark application</p>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
           <div className="mb-10">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-3">Ready to generate your trademark filing documents</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-3">Generate Your Documents</h2>
+            <p className="text-gray-600 mb-4">Our AI will analyze your application data and generate all required documents</p>
           </div>
           
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-40 h-40 rounded-full mb-4">
-              <svg className="w-24 h-24 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-24 h-24 text-[#C67B49]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <h3 className="text-xl font-medium text-gray-900 mb-2">Ready to generate your trademark filing documents</h3>
+
           </div>
           
-          <div className="bg-blue-50 rounded-lg p-8 mb-10">
+          <div className="bg-[#F1E8E2] rounded-lg p-8 mb-10">
             <div className="max-w-3xl mx-auto space-y-6">
               <div className="flex items-start space-x-2">
                 <div className="flex-shrink-0 mt-1">
-                  <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-[#C67B49]" fill="currentColor" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="4" />
                   </svg>
                 </div>
@@ -149,7 +151,7 @@ const GenerateDocuments = () => {
               </div>
               <div className="flex items-start space-x-2">
                 <div className="flex-shrink-0 mt-1">
-                  <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-[#C67B49]" fill="currentColor" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="4" />
                   </svg>
                 </div>
@@ -157,7 +159,7 @@ const GenerateDocuments = () => {
               </div>
               <div className="flex items-start space-x-2">
                 <div className="flex-shrink-0 mt-1">
-                  <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-[#C67B49]" fill="currentColor" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="4" />
                   </svg>
                 </div>
@@ -165,7 +167,7 @@ const GenerateDocuments = () => {
               </div>
               <div className="flex items-start space-x-2">
                 <div className="flex-shrink-0 mt-1">
-                  <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-[#C67B49]" fill="currentColor" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="4" />
                   </svg>
                 </div>
@@ -178,7 +180,7 @@ const GenerateDocuments = () => {
             <button
               onClick={handleGenerate}
               disabled={isGenerating}
-              className={`px-8 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center space-x-2 ${
+              className={`px-8 py-3 bg-[#C67B49] text-white rounded-lg hover:bg-[#C67B49]/90 transition-colors flex items-center space-x-2 ${
                 isGenerating ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >

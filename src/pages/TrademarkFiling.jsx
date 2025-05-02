@@ -4,6 +4,7 @@ import { validateTrademarkForm } from '../services/validationService';
 import { toast } from 'react-hot-toast';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AddressInput from '../components/AddressInput';
+import CustomSelect from '../components/CustomSelect';
 import { IoArrowBack } from 'react-icons/io5';
 import { IoInformationCircleOutline, IoBagHandleOutline, IoDocumentTextOutline, IoSparkles } from 'react-icons/io5';
 
@@ -353,7 +354,7 @@ const TrademarkFiling = () => {
         <div className='flex items-center gap-4 mb-6'> 
           <button 
             type="button"
-            className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
+            className="p-2 text-gray-600 hover:text-[#C67B49] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
             onClick={() => navigate(-1)}
             aria-label="Go back"
           >
@@ -367,7 +368,7 @@ const TrademarkFiling = () => {
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div 
-            className="bg-[#0080ff] h-2 rounded-full transition-all duration-500"
+            className="bg-[#C67B49] h-2 rounded-full transition-all duration-500"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -389,7 +390,7 @@ const TrademarkFiling = () => {
                 <button
                   type="button"
                   className={`w-full px-4 py-2 rounded-lg border-2 transition-all duration-200 flex items-center gap-2
-                    ${isActive ? 'bg-[#0080ff] text-white border-[#0080ff] shadow-lg' : isCompleted ? 'bg-[#0080ff]/90 text-white border-[#0080ff]/80' : 'bg-white text-[#0080ff]/60 border-[#0080ff]/20'}
+                    ${isActive ? 'bg-[#C67B49] text-white border-[#C67B49] shadow-lg' : isCompleted ? 'bg-[#C67B49]/90 text-white border-[#C67B49]/80' : 'bg-white text-[#C67B49]/60 border-[#C67B49]/20'}
                   `}
                   onClick={() => i <= step ? setStep(i) : null}
                   disabled={i > step}
@@ -401,7 +402,7 @@ const TrademarkFiling = () => {
               </div>
               {/* Render connector line except after the last step */}
               {i < steps.length - 1 && (
-                <div className={`flex-1 h-0.5 mx-2 transition-all duration-300 ${step > i ? 'bg-[#0080ff]' : 'bg-[#0080ff]/20'}`}></div>
+                <div className={`flex-1 h-0.5 mx-2 transition-all duration-300 ${step > i ? 'bg-[#C67B49]' : 'bg-[#C67B49]/20'}`}></div>
               )}
             </React.Fragment>
           );
@@ -421,13 +422,13 @@ const TrademarkFiling = () => {
                 name="trademarkName"
                 value={form.trademarkName}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0080ff] focus:border-[#0080ff]"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C67B49] focus:border-[#C67B49]"
                 placeholder="Enter your trademark name"
                 required
               />
             </div>
             <div>
-              <label className="block font-medium mb-1 text-gray-700">Mark Type <span className="text-[#0080ff]">*</span></label>
+              <label className="block font-medium mb-1 text-gray-700">Mark Type <span className="text-[#C67B49]">*</span></label>
               <div className="space-y-2">
                 {markTypes.map((type) => (
                   <label key={type} className="flex items-center space-x-2">
@@ -437,7 +438,7 @@ const TrademarkFiling = () => {
                       value={type}
                       checked={form.markType === type}
                       onChange={handleChange}
-                      className="text-[#0080ff] focus:ring-[#0080ff]"
+                      className="text-[#C67B49] focus:ring-[#C67B49]"
                     />
                     <span className="text-gray-700">{type}</span>
                   </label>
@@ -450,7 +451,7 @@ const TrademarkFiling = () => {
             {['Design Mark (logo or stylized text)', 'Color Mark'].includes(form.markType) && (
               <>
                 <div>
-                  <label className="block font-medium mb-1 text-gray-700">Mark Image Upload <span className="text-[#0080ff]">*</span></label>
+                  <label className="block font-medium mb-1 text-gray-700">Mark Image Upload <span className="text-[#C67B49]">*</span></label>
                   <input 
                     name="logo" 
                     type="file" 
@@ -461,21 +462,21 @@ const TrademarkFiling = () => {
                   {validationErrors.logo && (
                     <p className="text-red-500 text-xs mt-1">{validationErrors.logo}</p>
                   )}
-                  <p className="text-xs text-[#0080ff]/70 mt-1">Upload your mark image (JPEG, PNG, SVG). Max 10MB.</p>
+                  <p className="text-xs text-[#C67B49]/70 mt-1">Upload your mark image (JPEG, PNG, SVG). Max 10MB.</p>
                 </div>
                 <div>
-                  <label className="block font-medium mb-1 text-gray-700">Mark Description <span className="text-[#0080ff]">*</span></label>
+                  <label className="block font-medium mb-1 text-gray-700">Mark Description <span className="text-[#C67B49]">*</span></label>
                   <div className="flex gap-2 items-center">
                     <textarea 
                       name="logoDescription" 
                       value={form.logoDescription} 
                       onChange={handleChange} 
-                      className={`w-full px-4 py-3 rounded-lg border ${validationErrors.logoDescription ? 'border-red-500' : 'border-[#0080ff]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`} 
+                      className={`w-full px-4 py-3 rounded-lg border ${validationErrors.logoDescription ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`} 
                       placeholder="Describe mark elements (color, shape, stylization)" 
                     />
                     <button 
                       type="button" 
-                      className="px-3 py-1 rounded bg-[#0080ff] text-white text-xs font-semibold shadow hover:bg-[#0080ff]/80 transition-all" 
+                      className="px-3 py-1 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all" 
                       onClick={() => handleAISuggest('logoDescription')} 
                       disabled={aiLoading === 'logoDescription'}
                     >
@@ -489,18 +490,23 @@ const TrademarkFiling = () => {
               </>
             )}
             <div>
-              <label className="block font-medium mb-1 text-gray-700">Owner Name <span className="text-[#0080ff]">*</span></label>
-              <input name="ownerName" value={form.ownerName} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" placeholder="Full legal name" required />
+              <label className="block font-medium mb-1 text-gray-700">Owner Name <span className="text-[#C67B49]">*</span></label>
+              <input name="ownerName" value={form.ownerName} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" placeholder="Full legal name" required />
             </div>
             <div>
-              <label className="block font-medium mb-1 text-gray-700">Owner Type <span className="text-[#0080ff]">*</span></label>
-              <select name="ownerType" value={form.ownerType} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" required>
-                <option value="">Select owner type</option>
-                {ownerTypes.map((t) => <option key={t} value={t}>{t}</option>)}
-              </select>
+              <label className="block font-medium mb-1 text-gray-700">Owner Type <span className="text-[#C67B49]">*</span></label>
+              <CustomSelect
+                name="ownerType"
+                value={form.ownerType}
+                onChange={handleChange}
+                options={ownerTypes}
+                placeholder="Select owner type"
+                error={validationErrors.ownerType}
+                required
+              />
             </div>
             <div>
-              <label className="block font-medium mb-1 text-gray-700">Owner Address <span className="text-[#0080ff]">*</span></label>
+              <label className="block font-medium mb-1 text-gray-700">Owner Address <span className="text-[#C67B49]">*</span></label>
               <AddressInput 
                 name="ownerAddress" 
                 value={form.ownerAddress} 
@@ -509,7 +515,7 @@ const TrademarkFiling = () => {
                 placeholder="Full mailing address"
               />
             </div>
-            <div className="border-t border-[#0080ff]/10 pt-6 mt-6">
+            <div className="border-t border-[#C67B49]/10 pt-6 mt-6">
               <div className="flex items-center gap-2 mb-4">
                 <input 
                   name="hasAttorney" 
@@ -521,14 +527,14 @@ const TrademarkFiling = () => {
               </div>
 
               {form.hasAttorney && (
-                <div className="space-y-4 pl-6 border-l-2 border-[#0080ff]/20">
+                <div className="space-y-4 pl-6 border-l-2 border-[#C67B49]/20">
                   <div>
                     <label className="block font-medium mb-1 text-gray-700">Attorney Name</label>
                     <input 
                       name="attorneyName" 
                       value={form.attorneyName} 
                       onChange={handleChange} 
-                      className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" 
+                      className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" 
                       placeholder="Attorney's full name" 
                     />
                   </div>
@@ -538,7 +544,7 @@ const TrademarkFiling = () => {
                       name="attorneyAddress" 
                       value={form.attorneyAddress} 
                       onChange={handleChange} 
-                      className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" 
+                      className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" 
                       placeholder="Attorney's address" 
                     />
                   </div>
@@ -549,7 +555,7 @@ const TrademarkFiling = () => {
                       type="email"
                       value={form.attorneyEmail} 
                       onChange={handleChange} 
-                      className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" 
+                      className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" 
                       placeholder="Attorney's email address" 
                     />
                   </div>
@@ -563,26 +569,31 @@ const TrademarkFiling = () => {
         {step === 1 && (
           <>
             <div>
-              <label className="block font-medium mb-1 text-gray-700">Filing Basis <span className="text-[#0080ff]">*</span></label>
-              <select name="filingBasis" value={form.filingBasis} onChange={handleChange} className="w-[80%] px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" required>
-                <option value="">Select basis</option>
-                {filingBases.map((t) => <option key={t} value={t}>{t}</option>)}
-              </select>
+              <label className="block font-medium mb-1 text-gray-700">Filing Basis <span className="text-[#C67B49]">*</span></label>
+              <CustomSelect
+                name="filingBasis"
+                value={form.filingBasis}
+                onChange={handleChange}
+                options={filingBases}
+                placeholder="Select filing basis"
+                error={validationErrors.filingBasis}
+                required
+              />
             </div>
             <div>
-              <label className="block font-medium mb-1 text-gray-700">Business Description <span className="text-[#0080ff]">*</span></label>
+              <label className="block font-medium mb-1 text-gray-700">Business Description <span className="text-[#C67B49]">*</span></label>
               <div className="flex gap-2 items-center">
                 <textarea 
                   name="businessDescription" 
                   value={form.businessDescription} 
                   onChange={handleChange} 
-                  className="w-[80%] px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" 
+                  className="w-[80%] px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" 
                   placeholder="Describe your business, products, or services" 
                   required 
                 />
                 <button 
                   type="button" 
-                  className="px-3 py-3 ml-4 rounded bg-[#0080ff] text-white text-xs font-semibold shadow hover:bg-[#0080ff]/80 transition-all flex items-center gap-1"
+                  className="px-3 py-3 ml-4 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all flex items-center gap-1"
                   onClick={() => handleAISuggest('businessDescription')} 
                   disabled={aiLoading === 'businessDescription'}
                 >
@@ -592,18 +603,18 @@ const TrademarkFiling = () => {
               </div>
             </div>
             <div>
-              <label className="block font-medium mb-1 text-gray-700">Trademark Class <span className="text-[#0080ff]">*</span></label>
+              <label className="block font-medium mb-1 text-gray-700">Trademark Class <span className="text-[#C67B49]">*</span></label>
               <div className="flex gap-2 items-center mb-2">
                 <textarea 
                   name="goodsServices" 
                   value={form.goodsServices} 
                   onChange={handleChange} 
-                  className="w-[80%] px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" 
+                  className="w-[80%] px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" 
                   placeholder="Describe your goods/services in detail" 
                 />
                 <button 
                   type="button" 
-                  className="px-3 py-3 ml-4 rounded bg-[#0080ff] text-white text-xs font-semibold shadow hover:bg-[#0080ff]/80 transition-all flex items-center gap-1"
+                  className="px-3 py-3 ml-4 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all flex items-center gap-1"
                   onClick={() => handleAISuggest('goodsServices')} 
                   disabled={aiLoading === 'goodsServices'}
                 >
@@ -613,8 +624,8 @@ const TrademarkFiling = () => {
               </div>
               
               {aiClassRecommendation && (
-                <div className="space-y-4 p-4 bg-[#0080ff]/5 rounded-lg">
-                  <p className="text-sm text-[#0080ff]/80">{aiClassRecommendation.summary}</p>
+                <div className="space-y-4 p-4 bg-[#C67B49]/5 rounded-lg">
+                  <p className="text-sm text-[#C67B49]/80">{aiClassRecommendation.summary}</p>
                   
                   <div className="space-y-2">
                     {aiClassRecommendation.classes.map((classInfo) => (
@@ -628,7 +639,7 @@ const TrademarkFiling = () => {
                         />
                         <label htmlFor={`class-${classInfo.number}`} className="flex-1">
                           <div className="font-medium">Class {classInfo.number}</div>
-                          <div className="text-sm text-[#0080ff]/70">{classInfo.explanation}</div>
+                          <div className="text-sm text-[#C67B49]/70">{classInfo.explanation}</div>
                           <div className="text-sm mt-1">{classInfo.description}</div>
                         </label>
                       </div>
@@ -644,53 +655,50 @@ const TrademarkFiling = () => {
             {isUseInCommerce && (
               <div className="space-y-4">
                 <div>
-                  <label className="block font-medium mb-1 text-gray-700">Date of First Use Anywhere <span className="text-[#0080ff]">*</span></label>
+                  <label className="block font-medium mb-1 text-gray-700">Date of First Use Anywhere <span className="text-[#C67B49]">*</span></label>
                   <input 
                     name="firstUseAnywhere" 
                     type="date" 
                     value={form.firstUseAnywhere} 
                     onChange={handleChange} 
-                    className={`w-full px-4 py-3 rounded-lg border ${validationErrors.firstUseAnywhere ? 'border-red-500' : 'border-[#0080ff]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`} 
+                    className={`w-full px-4 py-3 rounded-lg border ${validationErrors.firstUseAnywhere ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`} 
                   />
                   {validationErrors.firstUseAnywhere && (
                     <p className="text-red-500 text-xs mt-1">{validationErrors.firstUseAnywhere}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block font-medium mb-1 text-gray-700">Date of First Use in Commerce <span className="text-[#0080ff]">*</span></label>
+                  <label className="block font-medium mb-1 text-gray-700">Date of First Use in Commerce <span className="text-[#C67B49]">*</span></label>
                   <input 
                     name="firstUseCommerce" 
                     type="date" 
                     value={form.firstUseCommerce} 
                     onChange={handleChange} 
-                    className={`w-full px-4 py-3 rounded-lg border ${validationErrors.firstUseCommerce ? 'border-red-500' : 'border-[#0080ff]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`} 
+                    className={`w-full px-4 py-3 rounded-lg border ${validationErrors.firstUseCommerce ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`} 
                   />
                   {validationErrors.firstUseCommerce && (
                     <p className="text-red-500 text-xs mt-1">{validationErrors.firstUseCommerce}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block font-medium mb-1 text-gray-700">Type of Commerce <span className="text-[#0080ff]">*</span></label>
-                  <select 
-                    name="typeOfCommerce" 
-                    value={form.typeOfCommerce} 
-                    onChange={handleChange} 
-                    className={`w-full px-4 py-3 rounded-lg border ${validationErrors.typeOfCommerce ? 'border-red-500' : 'border-[#0080ff]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`}
-                  >
-                    <option value="">Select type</option>
-                    {commerceTypes.map((t) => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                  {validationErrors.typeOfCommerce && (
-                    <p className="text-red-500 text-xs mt-1">{validationErrors.typeOfCommerce}</p>
-                  )}
+                  <label className="block font-medium mb-1 text-gray-700">Type of Commerce <span className="text-[#C67B49]">*</span></label>
+                  <CustomSelect
+                    name="typeOfCommerce"
+                    value={form.typeOfCommerce}
+                    onChange={handleChange}
+                    options={commerceTypes}
+                    placeholder="Select type of commerce"
+                    error={validationErrors.typeOfCommerce}
+                    required
+                  />
                 </div>
                 <div>
-                  <label className="block font-medium mb-1 text-gray-700">Describe How Mark is Used <span className="text-[#0080ff]">*</span></label>
+                  <label className="block font-medium mb-1 text-gray-700">Describe How Mark is Used <span className="text-[#C67B49]">*</span></label>
                   <textarea 
                     name="markUsage" 
                     value={form.markUsage} 
                     onChange={handleChange} 
-                    className={`w-full px-4 py-3 rounded-lg border ${validationErrors.markUsage ? 'border-red-500' : 'border-[#0080ff]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700`} 
+                    className={`w-full px-4 py-3 rounded-lg border ${validationErrors.markUsage ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700`} 
                     placeholder="How the mark appears on goods, services, advertising, etc." 
                   />
                   {validationErrors.markUsage && (
@@ -698,7 +706,7 @@ const TrademarkFiling = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block font-medium mb-1 text-gray-700">Specimen of Use <span className="text-[#0080ff]">*</span></label>
+                  <label className="block font-medium mb-1 text-gray-700">Specimen of Use <span className="text-[#C67B49]">*</span></label>
                   <input 
                     name="specimen" 
                     type="file" 
@@ -709,7 +717,7 @@ const TrademarkFiling = () => {
                   {validationErrors.specimen && (
                     <p className="text-red-500 text-xs mt-1">{validationErrors.specimen}</p>
                   )}
-                  <p className="text-xs text-[#0080ff]/70 mt-1">Upload marketing materials, website screenshots, product packaging, etc. (JPEG, PNG, PDF). Max 10MB.</p>
+                  <p className="text-xs text-[#C67B49]/70 mt-1">Upload marketing materials, website screenshots, product packaging, etc. (JPEG, PNG, PDF). Max 10MB.</p>
                 </div>
               </div>
             )}
@@ -729,21 +737,24 @@ const TrademarkFiling = () => {
               <label className="font-medium text-gray-700">Priority Claim (if previously filed abroad)</label>
             </div>
             {form.priorityClaim && (
-              <div className="space-y-3 pl-6 border-l-2 border-[#0080ff]/20">
+              <div className="space-y-3 pl-6 border-l-2 border-[#C67B49]/20">
                 <div>
                   <label className="block font-medium mb-1 text-gray-700">Priority Filing Country</label>
-                  <select name="priorityCountry" value={form.priorityCountry} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700">
-                    <option value="">Select country</option>
-                    {countries.map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
+                  <CustomSelect
+                    name="priorityCountry"
+                    value={form.priorityCountry}
+                    onChange={handleChange}
+                    options={countries}
+                    placeholder="Select country"
+                  />
                 </div>
                 <div>
                   <label className="block font-medium mb-1 text-gray-700">Priority Application Number</label>
-                  <input name="priorityAppNumber" value={form.priorityAppNumber} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" placeholder="Application number" />
+                  <input name="priorityAppNumber" value={form.priorityAppNumber} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" placeholder="Application number" />
                 </div>
                 <div>
                   <label className="block font-medium mb-1 text-gray-700">Priority Filing Date</label>
-                  <input name="priorityFilingDate" type="date" value={form.priorityFilingDate} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" />
+                  <input name="priorityFilingDate" type="date" value={form.priorityFilingDate} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" />
                 </div>
                 <div>
                   <label className="block font-medium mb-1 text-gray-700">Certified Copy of Priority Document</label>
@@ -757,15 +768,15 @@ const TrademarkFiling = () => {
                   {validationErrors.certifiedCopy && (
                     <p className="text-red-500 text-xs mt-1">{validationErrors.certifiedCopy}</p>
                   )}
-                  <p className="text-xs text-[#0080ff]/70 mt-1">Upload certified copy of priority document (PDF). Max 10MB.</p>
+                  <p className="text-xs text-[#C67B49]/70 mt-1">Upload certified copy of priority document (PDF). Max 10MB.</p>
                 </div>
               </div>
             )}
             <div>
               <label className="block font-medium mb-1 text-gray-700">Additional Notes</label>
-              <textarea name="additionalNotes" value={form.additionalNotes} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" placeholder="Any special instructions, background info, etc." />
+              <textarea name="additionalNotes" value={form.additionalNotes} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" placeholder="Any special instructions, background info, etc." />
             </div>
-            <div className="mb-4 p-4 bg-[#0080ff]/10 rounded">
+            <div className="mb-4 p-4 bg-[#C67B49]/10 rounded">
               <p className="text-gray-700 text-sm">
                 <strong>Declaration:</strong> "I declare that all statements made of my own knowledge are true and that all statements made on information and belief are believed to be true. I understand that willful false statements may result in penalties and jeopardize the validity of the application or any resulting registration."
               </p>
@@ -775,8 +786,8 @@ const TrademarkFiling = () => {
               <label className="font-medium text-gray-700">I agree to the above declaration</label>
             </div>
             <div>
-              <label className="block font-medium mb-1 text-gray-700">Digital Signature <span className="text-[#0080ff]">*</span></label>
-              <input name="signature" value={form.signature} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#0080ff]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#0080ff]/40 text-gray-700" placeholder="Type your full name as signature" required />
+              <label className="block font-medium mb-1 text-gray-700">Digital Signature <span className="text-[#C67B49]">*</span></label>
+              <input name="signature" value={form.signature} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700" placeholder="Type your full name as signature" required />
             </div>
           </>
         )}
@@ -794,7 +805,7 @@ const TrademarkFiling = () => {
             type="button" 
             onClick={prevStep} 
             disabled={step === 0 || isSubmitting} 
-            className="px-6 py-2 rounded-lg font-semibold bg-white border border-[#0080ff]/20 text-[#0080ff] hover:bg-[#0080ff]/10 transition-all disabled:opacity-50"
+            className="px-6 py-2 rounded-lg font-semibold bg-white border border-[#C67B49]/20 text-[#C67B49] hover:bg-[#C67B49]/10 transition-all disabled:opacity-50"
           >
             Back
           </button>
@@ -802,7 +813,7 @@ const TrademarkFiling = () => {
             <button 
               type="button" 
               onClick={handleNext}
-              className="px-6 py-2 rounded-lg font-semibold bg-[#0080ff] text-white shadow hover:shadow-[#0080ff]/30 transition-all"
+              className="px-6 py-2 rounded-lg font-semibold bg-[#C67B49] text-white shadow hover:shadow-[#C67B49]/30 transition-all"
             >
               Next
             </button>
@@ -810,7 +821,7 @@ const TrademarkFiling = () => {
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="px-6 py-2 rounded-lg font-semibold bg-[#0080ff] text-white shadow hover:shadow-[#0080ff]/30 transition-all disabled:opacity-70"
+              className="px-6 py-2 rounded-lg font-semibold bg-[#C67B49] text-white shadow hover:shadow-[#C67B49]/30 transition-all disabled:opacity-70"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Filing'}
             </button>

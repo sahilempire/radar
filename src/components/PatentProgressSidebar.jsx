@@ -90,7 +90,7 @@ const PatentProgressSidebar = () => {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className="bg-[#0080ff] h-2 rounded-full transition-all duration-500"
+              className="bg-[#F1E8E2] h-2 rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -107,7 +107,7 @@ const PatentProgressSidebar = () => {
                 {/* Connector line */}
                 {index > 0 && (
                   <div className={`absolute left-4 top-0 w-0.5 h-6 ${
-                    isCompleted ? 'bg-[#0080ff]' : 'bg-gray-200'
+                    isCompleted ? 'bg-[#F1E8E2]' : 'bg-gray-200'
                   }`} style={{ marginTop: '-24px' }} />
                 )}
 
@@ -119,9 +119,9 @@ const PatentProgressSidebar = () => {
                     {/* Step indicator */}
                     <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center relative z-10 ${
                       isCompleted 
-                        ? 'bg-[#0080ff] text-white' 
+                        ? 'bg-[#F1E8E2] text-white' 
                         : isActive 
-                          ? 'bg-[#0080ff]/10 text-[#0080ff] border-2 border-[#0080ff]' 
+                          ? 'bg-[#F1E8E2]/10 text-[#F1E8E2] border-2 border-[#F1E8E2]' 
                           : 'bg-gray-100 text-gray-400'
                     }`}>
                       {isCompleted ? (
@@ -136,7 +136,7 @@ const PatentProgressSidebar = () => {
                     {/* Step content */}
                     <div className="flex-1">
                       <h3 className={`text-sm font-medium ${
-                        isActive ? 'text-[#0080ff]' : isCompleted ? 'text-black' : 'text-gray-500'
+                        isActive ? 'text-[#F1E8E2]' : isCompleted ? 'text-black' : 'text-gray-500'
                       }`}>
                         {step.title}
                       </h3>

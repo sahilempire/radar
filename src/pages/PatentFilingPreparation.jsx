@@ -94,7 +94,7 @@ const PatentFilingPreparation = () => {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => navigate('/dashboard/patent')}
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="px-6 py-2 bg-[#C67B49] text-white rounded-lg hover:bg-[#C67B49]/90 transition-colors"
           >
             Back to Patent Filing
           </button>
@@ -110,7 +110,7 @@ const PatentFilingPreparation = () => {
           <div className="flex items-center gap-2 mb-6">
             <button
               type="button"
-              className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
+              className="p-2 text-gray-600 hover:text-[#C67B49] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
               onClick={() => navigate(-1)}
               aria-label="Go back"
             >
@@ -217,17 +217,17 @@ const PatentFilingPreparation = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">Filing Calendar</h2>
                 <p className="text-gray-600 mb-6">Important dates for your patent application</p>
                 <div className="space-y-6">
-                  <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="p-4 bg-neutral-50 rounded-lg">
                     <h3 className="font-medium text-gray-900">Estimated Filing Date</h3>
                     <p className="text-sm text-gray-600 mb-2">When your application will be submitted</p>
                     <p className="text-primary font-medium text-lg">{formatDate(currentDate)}</p>
                   </div>
-                  <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="p-4 bg-neutral-50 rounded-lg">
                     <h3 className="font-medium text-gray-900">Estimated First Office Action</h3>
                     <p className="text-sm text-gray-600 mb-2">Initial review by USPTO</p>
                     <p className="text-primary font-medium text-lg">12-18 months</p>
                   </div>
-                  <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="p-4 bg-neutral-50 rounded-lg">
                     <h3 className="font-medium text-gray-900">Estimated Grant Time</h3>
                     <p className="text-sm text-gray-600 mb-2">Total time for application approval</p>
                     <p className="text-primary font-medium text-lg">24-30 months</p>

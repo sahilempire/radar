@@ -126,7 +126,7 @@ const PatentCompliance = () => {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => navigate('/dashboard/patent')}
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="px-6 py-2 bg-[#C67B49] text-white rounded-lg hover:bg-[#C67B49]/90 transition-colors"
           >
             Back to Patent Filing
           </button>
@@ -142,7 +142,7 @@ const PatentCompliance = () => {
           <div className="flex items-center gap-2 mb-6">
             <button
               type="button"
-              className="p-2 text-gray-600 hover:text-[#0080ff] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
+              className="p-2 text-gray-600 hover:text-[#C67B49] transition-colors rounded-[25%] hover:bg-gray-100 border border-gray-300"
               onClick={() => navigate(-1)}
               aria-label="Go back"
             >
@@ -170,7 +170,7 @@ const PatentCompliance = () => {
                 <h3 className="text-xl font-medium text-gray-900">Ready to check compliance of your patent application</h3>
               </div>
               
-              <div className="bg-blue-50 rounded-lg p-8 mb-10">
+              <div className="bg-neutral-50 rounded-lg p-8 mb-10">
                 <div className="max-w-3xl mx-auto space-y-6">
                   <div className="flex items-start space-x-2">
                     <div className="flex-shrink-0 mt-1">
@@ -211,7 +211,7 @@ const PatentCompliance = () => {
                 <button
                   onClick={handleRunComplianceCheck}
                   disabled={isLoading}
-                  className={`px-8 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center space-x-2 ${
+                  className={`px-8 py-3 bg-[#C67B49] text-white rounded-lg hover:bg-[#C67B49]/90 transition-colors flex items-center space-x-2 ${
                     isLoading ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -312,7 +312,7 @@ const PatentCompliance = () => {
                   className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-colors duration-200 ${
                     isLoading
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : 'bg-blue-50 text-primary hover:bg-blue-100'
+                      : 'bg-neutral-50 text-primary hover:bg-blue-100'
                   }`}
                 >
                   {isLoading ? (
@@ -335,7 +335,7 @@ const PatentCompliance = () => {
 
                 <button
                   onClick={handleContinue}
-                  className="flex items-center space-x-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-200"
+                  className="flex items-center space-x-2 px-6 py-3 bg-[#C67B49] text-white rounded-lg hover:bg-[#C67B49]/90 transition-colors duration-200"
                 >
                   <span>Continue to Filing Prep</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

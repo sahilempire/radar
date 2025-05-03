@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFilingPrepAnalysis } from '../services/filingService';
 import { IoArrowBack } from 'react-icons/io5';
+import { HiOutlineDocumentCheck } from 'react-icons/hi2';
 
 function FilingPrep() {
   const { filingId } = useParams();
@@ -148,43 +149,25 @@ function FilingPrep() {
                   </div>
                 </div>
               </div>
-
-              {/* Filing Calendar */}
-              <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">Filing Calendar</h2>
-                <p className="text-gray-600 mb-6">Important dates for your trademark application</p>
-                <div className="space-y-6">
-                  <div className="p-4 bg-neutral-50 rounded-lg">
-                    <h3 className="font-medium text-gray-900">Estimated Filing Date</h3>
-                    <p className="text-sm text-gray-600 mb-2">When your application will be submitted</p>
-                    <p className="text-primary font-medium text-lg">{formatDate(filingDate)}</p>
-                  </div>
-                  <div className="p-4 bg-neutral-50 rounded-lg">
-                    <h3 className="font-medium text-gray-900">Estimated First Office Action</h3>
-                    <p className="text-sm text-gray-600 mb-2">Initial review by the patent office</p>
-                    <p className="text-primary font-medium text-lg">3-4 months</p>
-                  </div>
-                  <div className="p-4 bg-neutral-50 rounded-lg">
-                    <h3 className="font-medium text-gray-900">Estimated Registration Time</h3>
-                    <p className="text-sm text-gray-600 mb-2">Total time for application approval</p>
-                    <p className="text-primary font-medium text-lg">9-12 months</p>
-                  </div>
-                </div>
-              </div>
             </>
           )}
 
           {activeTab === 'analysis' && (
             <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">AI Analysis</h2>
-              <p className="text-gray-600 mb-6">Get AI-powered insights about your trademark application</p>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">AI Filing Assessment</h2>
+              <p className="text-gray-600 mb-6">Get an AI-powered analysis of your application's filing readiness</p>
 
               {!analysis && (
-                <div className="text-center py-8">
+                <div className="text-center py-8 max-w-xl mx-auto">
+                  <div className="flex justify-center mb-5">
+                    <HiOutlineDocumentCheck size={80} color="#C67B49" />
+                  </div>
+                  <p className="text-lg text-gray-800 mt-5 mb-1">Get an AI-powered analysis of your application's filing readiness</p>
+                  <p className="text-gray-600 mb-8">Our AI can analyze your complete application and provide insights on its filing readiness and potential areas for improvement.</p>
                   <button
                     onClick={handleAIAnalysis}
                     disabled={isLoading}
-                    className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-colors duration-200 ${
+                    className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-colors duration-200 mx-auto mt-2 ${
                       isLoading
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-primary text-white hover:bg-primary/90'
@@ -413,6 +396,28 @@ function FilingPrep() {
               )}
             </div>
           )}
+        </div>
+        {/* Filing Calendar - always visible */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mt-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Filing Calendar</h2>
+          <p className="text-gray-600 mb-6">Important dates for your trademark application</p>
+          <div className="space-y-6">
+            <div className="p-4 bg-neutral-50 rounded-lg">
+              <h3 className="font-medium text-gray-900">Estimated Filing Date</h3>
+              <p className="text-sm text-gray-600 mb-2">When your application will be submitted</p>
+              <p className="text-primary font-medium text-lg">{formatDate(filingDate)}</p>
+            </div>
+            <div className="p-4 bg-neutral-50 rounded-lg">
+              <h3 className="font-medium text-gray-900">Estimated First Office Action</h3>
+              <p className="text-sm text-gray-600 mb-2">Initial review by the patent office</p>
+              <p className="text-primary font-medium text-lg">3-4 months</p>
+            </div>
+            <div className="p-4 bg-neutral-50 rounded-lg">
+              <h3 className="font-medium text-gray-900">Estimated Registration Time</h3>
+              <p className="text-sm text-gray-600 mb-2">Total time for application approval</p>
+              <p className="text-primary font-medium text-lg">9-12 months</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

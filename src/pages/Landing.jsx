@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, FileText, CreditCard, Check, Cpu, PhoneCall } from 'react-feather';
 import platformImage from '../assests/preview.png';
 import logoHorizontal from '../assests/logo-horizontal.png';
-
+import footerImage from '../assests/footer-image.png';
+import neuralarcLogo from '../assests/neuralarc-logo.png';
+import footerLogo from '../assests/footer-logo.png';
 const Landing = () => {
   const features = [
     {
@@ -162,17 +164,18 @@ const Landing = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[#222222] text-white py-12 px-4">
+      <footer className="bg-[#3a2e28] rounded-t-3xl text-[#AFAFAF] py-12 px-4 relative">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start mb-10">
-            <div className="flex flex-col items-start mb-6 md:mb-0">
-              <div className="flex items-center">
-                <img src={logoHorizontal} alt="Radar Logo" className="h-14 w-auto" />
-              </div>
-              <p className="text-gray-400 text-sm mt-2">IP Protection Made Simple</p>
+            <div className="flex items-center mb-6 md:mb-0">
+              <img src={footerLogo} alt="Radar Logo" className="h-14 w-auto" />
+              <span className="text-[#AFAFAF] text-sm ml-4">IP Protection Made Simple</span>
             </div>
           </div>
-          <div className="border-t border-gray-700 pt-6 pb-4">
+          <div className="pb-4">
+            <div className="flex justify-start mb-4">
+              <div className="w-[600px] h-0.5 bg-gradient-to-r from-gray-500/30 to-gray-700/0 rounded-full"></div>
+            </div>
             <div className="flex flex-col md:flex-row justify-start items-start gap-2 md:gap-6 mb-8">
               {/* Footer navigation links - ensure your router has these routes */}
               <Link to="/terms" className="text-sm text-gray-400 hover:text-white">Terms of Use</Link>
@@ -183,11 +186,22 @@ const Landing = () => {
             </div>
             <div>
               <p className="text-gray-400 text-sm">
-                Copyright 2025. All rights reserved. Radar, A thing by 
-                <span className="ml-1 opacity-70">NEURALARC</span>
+                Copyright 2025. All rights reserved. Radar, A thing by <a href="https://neuralarc.com" target="_blank" rel="noopener noreferrer">
+                <img
+                  src={neuralarcLogo}
+                  alt="Neuralarc Logo"
+                  className="inline-block h-3 w-auto ml-2 align-middle"
+                /></a>
               </p>
             </div>
           </div>
+        </div>
+        <div className="hidden md:block absolute right-0 top-0 h-full">
+          <img 
+            src={footerImage}
+            alt="Radar Application Interface" 
+            className="h-full object-cover rounded-tl-3xl shadow-lg"
+          />
         </div>
       </footer>
     </div>

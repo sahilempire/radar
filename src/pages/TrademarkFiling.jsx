@@ -471,11 +471,11 @@ const TrademarkFiling = () => {
                 <div className="mb-4">
                   <label className="block font-medium mb-6 text-gray-700">Mark Image Upload <span className="text-[#C67B49]">*</span></label>
                   <div className={customStyles.fileUpload.container}>
-                    <input 
-                      name="logo" 
-                      type="file" 
-                      accept="image/jpeg,image/png,image/svg+xml" 
-                      onChange={handleChange} 
+                  <input 
+                    name="logo" 
+                    type="file" 
+                    accept="image/jpeg,image/png,image/svg+xml" 
+                    onChange={handleChange} 
                       className={customStyles.fileUpload.input}
                       id="logo-upload"
                     />
@@ -677,192 +677,254 @@ const TrademarkFiling = () => {
             </div>
             {isUseInCommerce && (
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block font-medium mb-1 text-gray-700">Date of First Use Anywhere <span className="text-[#C67B49]">*</span></label>
-                    <DatePicker
-                      value={form.firstUseAnywhere ? dayjs(form.firstUseAnywhere) : null}
-                      onChange={date => setForm(f => ({ ...f, firstUseAnywhere: date ? date.format('YYYY-MM-DD') : '' }))}
-                      disableFuture
-                      format="DD-MM-YYYY"
-                      slotProps={{
-                        textField: {
-                          placeholder: 'dd-mm-yyyy',
-                          fullWidth: true,
-                          size: 'medium',
-                          sx: {
-                            backgroundColor: '#fff',
+              <div className="space-y-4">
+                <div>
+                  <label className="block font-medium mb-1 text-gray-700">Date of First Use Anywhere <span className="text-[#C67B49]">*</span></label>
+                  <DatePicker
+                    value={form.firstUseAnywhere ? dayjs(form.firstUseAnywhere) : null}
+                    onChange={date => setForm(f => ({ ...f, firstUseAnywhere: date ? date.format('YYYY-MM-DD') : '' }))}
+                    disableFuture
+                    format="YYYY-MM-DD"
+                    slotProps={{
+                      textField: {
+                        placeholder: 'yyyy-mm-dd',
+                        fullWidth: true,
+                        size: 'medium',
+                        sx: {
+                          backgroundColor: '#fff',
+                          borderRadius: '0.75rem',
+                          '& .MuiOutlinedInput-root': {
                             borderRadius: '0.75rem',
-                            '& .MuiOutlinedInput-root': {
-                              borderRadius: '0.75rem',
+                          },
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#C67B49',
+                          },
+                          '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#E3A778',
+                          },
+                          '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#C67B49',
+                          },
+                        },
+                        error: Boolean(validationErrors.firstUseAnywhere),
+                        helperText: validationErrors.firstUseAnywhere || '',
+                      },
+                      popper: {
+                        sx: {
+                          '& .MuiPaper-root': {
+                            borderRadius: 2,
+                            boxShadow: '0 4px 24px 0 rgba(198, 123, 73, 0.10)',
+                          },
+                          '& .MuiPickersDay-root': {
+                            borderRadius: '8px',
+                            fontWeight: 500,
+                            '&.Mui-selected': {
+                              backgroundColor: '#C67B49',
+                              color: '#fff',
                             },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#C67B49',
-                            },
-                            '&:hover .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#E3A778',
-                            },
-                            '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#C67B49',
+                            '&:hover': {
+                              backgroundColor: '#E3A778',
+                              color: '#fff',
                             },
                           },
-                          error: Boolean(validationErrors.firstUseAnywhere),
-                          helperText: validationErrors.firstUseAnywhere || '',
-                        },
-                        popper: {
-                          sx: {
-                            '& .MuiPaper-root': {
-                              borderRadius: 2,
-                              boxShadow: '0 4px 24px 0 rgba(198, 123, 73, 0.10)',
+                          '& .MuiPickersCalendarHeader-label': {
+                            color: '#C67B49',
+                            fontWeight: 700,
+                            fontSize: '1.15rem',
+                          },
+                          '& .MuiPickersArrowSwitcher-root button': {
+                            color: '#C67B49',
+                          },
+                          '& .MuiPickersCalendarHeader-switchViewButton': {
+                            color: '#C67B49',
+                          },
+                          '& .MuiPickersDay-today': {
+                            border: '1.5px solid #C67B49',
+                            background: '#fff',
+                            color: '#C67B49',
+                          },
+                          '& .MuiPickersDay-root.Mui-disabled': {
+                            color: '#ccc',
+                          },
+                          '& .MuiPickersCalendarHeader-root': {
+                            background: '#F1E8E2',
+                            borderRadius: '12px 12px 0 0',
+                          },
+                          '& .MuiPickersDay-dayOutsideMonth': {
+                            color: '#bbb',
+                          },
+                          '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
+                            borderRadius: '8px',
+                            fontWeight: 600,
+                            '&.Mui-selected': {
+                              backgroundColor: '#C67B49',
+                              color: '#fff',
                             },
-                            '& .MuiPickersDay-root': {
-                              borderRadius: '8px',
-                              fontWeight: 500,
-                              '&.Mui-selected': {
-                                backgroundColor: '#C67B49',
-                                color: '#fff',
-                              },
-                              '&:hover': {
-                                backgroundColor: '#E3A778',
-                                color: '#fff',
-                              },
-                            },
-                            '& .MuiPickersCalendarHeader-label': {
-                              color: '#C67B49',
-                              fontWeight: 700,
-                              fontSize: '1.15rem',
-                            },
-                            '& .MuiPickersArrowSwitcher-root button': {
-                              color: '#C67B49',
-                            },
-                            '& .MuiPickersCalendarHeader-switchViewButton': {
-                              color: '#C67B49',
-                            },
-                            '& .MuiPickersDay-today': {
-                              border: '1.5px solid #C67B49',
-                              background: '#fff',
-                              color: '#C67B49',
-                            },
-                            '& .MuiPickersDay-root.Mui-disabled': {
-                              color: '#ccc',
-                            },
-                            '& .MuiPickersCalendarHeader-root': {
-                              background: '#F1E8E2',
-                              borderRadius: '12px 12px 0 0',
-                            },
-                            '& .MuiPickersDay-dayOutsideMonth': {
-                              color: '#bbb',
-                            },
-                            '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
-                              borderRadius: '8px',
-                              fontWeight: 600,
-                              '&.Mui-selected': {
-                                backgroundColor: '#C67B49',
-                                color: '#fff',
-                              },
-                              '&:hover': {
-                                backgroundColor: '#E3A778',
-                                color: '#fff',
-                              },
+                            '&:hover': {
+                              backgroundColor: '#E3A778',
+                              color: '#fff',
                             },
                           },
                         },
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-medium mb-1 text-gray-700">Date of First Use in Commerce <span className="text-[#C67B49]">*</span></label>
-                    <DatePicker
-                      value={form.firstUseCommerce ? dayjs(form.firstUseCommerce) : null}
-                      onChange={date => setForm(f => ({ ...f, firstUseCommerce: date ? date.format('YYYY-MM-DD') : '' }))}
-                      disableFuture
-                      format="DD-MM-YYYY"
-                      slotProps={{
-                        textField: {
-                          placeholder: 'dd-mm-yyyy',
-                          fullWidth: true,
-                          size: 'medium',
-                          sx: {
-                            backgroundColor: '#fff',
-                            borderRadius: '0.75rem',
-                            '& .MuiOutlinedInput-root': {
-                              borderRadius: '0.75rem',
-                            },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#C67B49',
-                            },
-                            '&:hover .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#E3A778',
-                            },
-                            '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#C67B49',
-                            },
-                          },
-                          error: Boolean(validationErrors.firstUseCommerce),
-                          helperText: validationErrors.firstUseCommerce || '',
-                        },
-                        popper: {
-                          sx: {
-                            '& .MuiPaper-root': {
-                              borderRadius: 2,
-                              boxShadow: '0 4px 24px 0 rgba(198, 123, 73, 0.10)',
-                            },
-                            '& .MuiPickersDay-root': {
-                              borderRadius: '8px',
-                              fontWeight: 500,
-                              '&.Mui-selected': {
-                                backgroundColor: '#C67B49',
-                                color: '#fff',
-                              },
-                              '&:hover': {
-                                backgroundColor: '#E3A778',
-                                color: '#fff',
-                              },
-                            },
-                            '& .MuiPickersCalendarHeader-label': {
-                              color: '#C67B49',
-                              fontWeight: 700,
-                              fontSize: '1.15rem',
-                            },
-                            '& .MuiPickersArrowSwitcher-root button': {
-                              color: '#C67B49',
-                            },
-                            '& .MuiPickersCalendarHeader-switchViewButton': {
-                              color: '#C67B49',
-                            },
-                            '& .MuiPickersDay-today': {
-                              border: '1.5px solid #C67B49',
-                              background: '#fff',
-                              color: '#C67B49',
-                            },
-                            '& .MuiPickersDay-root.Mui-disabled': {
-                              color: '#ccc',
-                            },
-                            '& .MuiPickersCalendarHeader-root': {
-                              background: '#F1E8E2',
-                              borderRadius: '12px 12px 0 0',
-                            },
-                            '& .MuiPickersDay-dayOutsideMonth': {
-                              color: '#bbb',
-                            },
-                            '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
-                              borderRadius: '8px',
-                              fontWeight: 600,
-                              '&.Mui-selected': {
-                                backgroundColor: '#C67B49',
-                                color: '#fff',
-                              },
-                              '&:hover': {
-                                backgroundColor: '#E3A778',
-                                color: '#fff',
-                              },
-                            },
-                          },
-                        },
-                      }}
-                    />
-                  </div>
+                      },
+                    }}
+                  />
                 </div>
+                <div>
+                  <label className="block font-medium mb-1 text-gray-700">Date of First Use in Commerce <span className="text-[#C67B49]">*</span></label>
+                  <DatePicker
+                    value={form.firstUseCommerce ? dayjs(form.firstUseCommerce) : null}
+                    onChange={date => setForm(f => ({ ...f, firstUseCommerce: date ? date.format('YYYY-MM-DD') : '' }))}
+                    disableFuture
+                    format="YYYY-MM-DD"
+                    slotProps={{
+                      textField: {
+                        placeholder: 'yyyy-mm-dd',
+                        fullWidth: true,
+                        size: 'medium',
+                        sx: {
+                          backgroundColor: '#fff',
+                          borderRadius: '0.75rem',
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '0.75rem',
+                          },
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#C67B49',
+                          },
+                          '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#E3A778',
+                          },
+                          '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#C67B49',
+                          },
+                        },
+                        error: Boolean(validationErrors.firstUseCommerce),
+                        helperText: validationErrors.firstUseCommerce || '',
+                      },
+                      popper: {
+                        sx: {
+                          '& .MuiPaper-root': {
+                            borderRadius: 2,
+                            boxShadow: '0 4px 24px 0 rgba(198, 123, 73, 0.10)',
+                          },
+                          '& .MuiPickersDay-root': {
+                            borderRadius: '8px',
+                            fontWeight: 500,
+                            '&.Mui-selected': {
+                              backgroundColor: '#C67B49',
+                              color: '#fff',
+                            },
+                            '&:hover': {
+                              backgroundColor: '#E3A778',
+                              color: '#fff',
+                            },
+                          },
+                          '& .MuiPickersCalendarHeader-label': {
+                            color: '#C67B49',
+                            fontWeight: 700,
+                            fontSize: '1.15rem',
+                          },
+                          '& .MuiPickersArrowSwitcher-root button': {
+                            color: '#C67B49',
+                          },
+                          '& .MuiPickersCalendarHeader-switchViewButton': {
+                            color: '#C67B49',
+                          },
+                          '& .MuiPickersDay-today': {
+                            border: '1.5px solid #C67B49',
+                            background: '#fff',
+                            color: '#C67B49',
+                          },
+                          '& .MuiPickersDay-root.Mui-disabled': {
+                            color: '#ccc',
+                          },
+                          '& .MuiPickersCalendarHeader-root': {
+                            background: '#F1E8E2',
+                            borderRadius: '12px 12px 0 0',
+                          },
+                          '& .MuiPickersDay-dayOutsideMonth': {
+                            color: '#bbb',
+                          },
+                          '& .MuiPickersYear-yearButton, & .MuiPickersMonth-monthButton': {
+                            borderRadius: '8px',
+                            fontWeight: 600,
+                            '&.Mui-selected': {
+                              backgroundColor: '#C67B49',
+                              color: '#fff',
+                            },
+                            '&:hover': {
+                              backgroundColor: '#E3A778',
+                              color: '#fff',
+                            },
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </div>
+                {/* Type of Commerce Dropdown */}
+                <div>
+                  <label className="block font-medium mb-1 text-gray-700">Type of Commerce <span className="text-[#C67B49]">*</span></label>
+                  <select
+                    name="typeOfCommerce"
+                    value={form.typeOfCommerce}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700"
+                    required
+                  >
+                    <option value="">Select type of commerce</option>
+                    {commerceTypes.map((type) => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </select>
+                  {validationErrors.typeOfCommerce && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.typeOfCommerce}</p>
+                  )}
+                </div>
+                {/* Mark Usage Textarea */}
+                <div>
+                  <label className="block font-medium mb-1 text-gray-700">Mark Usage Description <span className="text-[#C67B49]">*</span></label>
+                  <textarea
+                    name="markUsage"
+                    value={form.markUsage}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg border border-[#C67B49]/20 bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700"
+                    placeholder="Describe how the mark is used in commerce"
+                    required
+                  />
+                  {validationErrors.markUsage && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.markUsage}</p>
+                  )}
+                </div>
+                {/* Specimen File Upload */}
+                <div>
+                  <label className="block font-medium mb-4 text-gray-700">Specimen of Use <span className="text-[#C67B49]">*</span></label>
+                  <div className={customStyles.fileUpload.container}>
+                    <input
+                      type="file"
+                      name="specimen"
+                      accept=".jpeg,.jpg,.png,.pdf"
+                      onChange={handleChange}
+                      className={customStyles.fileUpload.input}
+                      id="specimen-upload"
+                    />
+                    <label
+                      htmlFor="specimen-upload"
+                      className={customStyles.fileUpload.button}
+                      style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
+                    >
+                      Browse Files
+                    </label>
+                  </div>
+                  {form.specimen && (
+                    <p className="text-sm text-[#C67B49]/80 mt-2">Selected: {form.specimen.name}</p>
+                  )}
+                  {validationErrors.specimen && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.specimen}</p>
+                  )}
+                  <p className="text-xs text-[#C67B49]/70 mt-1">Upload your specimen (JPEG, PNG, PDF). Max 10MB.</p>
+                </div>
+              </div>
               </LocalizationProvider>
             )}
           </>

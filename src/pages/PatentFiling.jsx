@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { IoArrowBack } from 'react-icons/io5';
-import { IoInformationCircleOutline, IoDocumentTextOutline, IoSearchOutline, IoListOutline, IoBulbOutline } from 'react-icons/io5';
+import { IoInformationCircleOutline, IoDocumentTextOutline, IoSearchOutline, IoListOutline, IoBulbOutline, IoSparkles } from 'react-icons/io5';
 import { searchPriorArt } from '../api/priorArtSearch';
 import CustomSelect from '../components/CustomSelect';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { getAIDescription, getAIClassRecommendation, getAITrademarkName, getAIMarkDescription } from '../services/trademarkService';
 
 const steps = [
   'Basic Info',
@@ -46,7 +47,13 @@ const initialForm = {
   priorArtReferences: [{ reference: '', type: '', relevance: '' }],
 
   // Claims
-  claims: []
+  claims: [],
+
+  // Drawing References
+  drawings: [
+    { figure: 'Fig. 1', description: '', file: null },
+    { figure: 'Fig. 2', description: '', file: null },
+  ],
 };
 
 const patentTypes = [
@@ -138,7 +145,7 @@ const PatentFiling = () => {
   const handleAddDrawing = () => {
     setForm(f => ({
       ...f,
-      drawings: [...f.drawings, { figure: `Fig. ${f.drawings.length + 1}`, description: '' }]
+      drawings: [...(f.drawings || []), { figure: `Fig. ${(f.drawings || []).length + 1}`, description: '', file: null }]
     }));
   };
 
@@ -147,6 +154,15 @@ const PatentFiling = () => {
       ...f,
       drawings: f.drawings.map((drawing, i) => 
         i === index ? { ...drawing, [field]: value } : drawing
+      )
+    }));
+  };
+
+  const handleDrawingFileChange = (index, file) => {
+    setForm(f => ({
+      ...f,
+      drawings: f.drawings.map((drawing, i) =>
+        i === index ? { ...drawing, file } : drawing
       )
     }));
   };
@@ -266,6 +282,39 @@ const PatentFiling = () => {
   // Progress calculation
   const progressPercent = ((step + 1) / steps.length) * 100;
 
+  // Add this function for AI suggestions
+  const handleAISuggest = async (field) => {
+    try {
+      setAiLoading(field);
+      let suggestion = '';
+      if (field === 'briefSummary') {
+        suggestion = (await getAIDescription(form.briefSummary)).description;
+      } else if (field === 'technicalField') {
+        suggestion = (await getAIDescription(form.technicalField)).description;
+      } else if (field === 'backgroundArt') {
+        suggestion = (await getAIDescription(form.backgroundArt)).description;
+      } else if (field === 'detailedDescription') {
+        suggestion = (await getAIDescription(form.detailedDescription)).description;
+      } else if (field === 'advantageousEffects') {
+        suggestion = (await getAIDescription(form.advantageousEffects)).description;
+      } else if (field === 'knownPriorArt') {
+        suggestion = (await getAIDescription(form.knownPriorArt)).description;
+      } else if (field === 'claims') {
+        suggestion = (await getAIDescription(form.claims.join('\n'))).description;
+      }
+      if (suggestion) {
+        setForm(f => ({ ...f, [field]: field === 'claims' ? suggestion.split('\n') : suggestion }));
+        toast.success('AI suggestion applied successfully');
+      } else {
+        toast.error('No suggestion available. Please try again.');
+      }
+    } catch (err) {
+      toast.error('Failed to get AI suggestion');
+    } finally {
+      setAiLoading(null);
+    }
+  };
+
   return (
     <div className="w-[88%] mx-auto p-8 outline outline-1 outline-gray-200 rounded-lg">
       {/* Progress Bar Section */}
@@ -378,17 +427,26 @@ const PatentFiling = () => {
 
           <div>
             <label className="block font-medium mb-1 text-gray-700">Brief Summary <span className="text-[#C67B49]">*</span></label>
-            <textarea
-              name="briefSummary"
-              value={form.briefSummary}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                validationErrors.briefSummary ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
-              placeholder="Provide a brief summary of your invention"
-              rows="3"
-              required
-            />
+            <div className="flex gap-2 items-center">
+              <textarea
+                name="briefSummary"
+                value={form.briefSummary}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 rounded-lg border ${validationErrors.briefSummary ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
+                placeholder="Provide a brief summary of your invention"
+                rows="3"
+                required
+              />
+              <button
+                type="button"
+                className="px-3 py-3 ml-4 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all flex items-center gap-1"
+                onClick={() => handleAISuggest('briefSummary')}
+                disabled={aiLoading === 'briefSummary'}
+              >
+                <IoSparkles className="w-4 h-4" />
+                {aiLoading === 'briefSummary' ? 'Suggesting...' : ''}
+              </button>
+            </div>
             {showError('briefSummary')}
           </div>
 
@@ -525,65 +583,101 @@ const PatentFiling = () => {
         <div className="space-y-6">
           <div>
             <label className="block font-medium mb-1 text-gray-700">Technical Field <span className="text-[#C67B49]">*</span></label>
-            <textarea
-              name="technicalField"
-              value={form.technicalField}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                validationErrors.technicalField ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
-              placeholder="Describe the technical field to which the invention relates"
-              rows="4"
-              required
-            />
+            <div className="flex gap-2 items-center">
+              <textarea
+                name="technicalField"
+                value={form.technicalField}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 rounded-lg border ${validationErrors.technicalField ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
+                placeholder="Describe the technical field to which the invention relates"
+                rows="4"
+                required
+              />
+              <button
+                type="button"
+                className="px-3 py-3 ml-4 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all flex items-center gap-1"
+                onClick={() => handleAISuggest('technicalField')}
+                disabled={aiLoading === 'technicalField'}
+              >
+                <IoSparkles className="w-4 h-4" />
+                {aiLoading === 'technicalField' ? 'Suggesting...' : ''}
+              </button>
+            </div>
             {showError('technicalField')}
           </div>
 
           <div>
             <label className="block font-medium mb-1 text-gray-700">Background Art <span className="text-[#C67B49]">*</span></label>
-            <textarea
-              name="backgroundArt"
-              value={form.backgroundArt}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                validationErrors.backgroundArt ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
-              placeholder="Describe the existing art, problems, and limitations that your invention addresses"
-              rows="4"
-              required
-            />
+            <div className="flex gap-2 items-center">
+              <textarea
+                name="backgroundArt"
+                value={form.backgroundArt}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 rounded-lg border ${validationErrors.backgroundArt ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
+                placeholder="Describe the existing art, problems, and limitations that your invention addresses"
+                rows="4"
+                required
+              />
+              <button
+                type="button"
+                className="px-3 py-3 ml-4 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all flex items-center gap-1"
+                onClick={() => handleAISuggest('backgroundArt')}
+                disabled={aiLoading === 'backgroundArt'}
+              >
+                <IoSparkles className="w-4 h-4" />
+                {aiLoading === 'backgroundArt' ? 'Suggesting...' : ''}
+              </button>
+            </div>
             {showError('backgroundArt')}
           </div>
 
           <div>
             <label className="block font-medium mb-1 text-gray-700">Detailed Description <span className="text-[#C67B49]">*</span></label>
-            <textarea
-              name="detailedDescription"
-              value={form.detailedDescription}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                validationErrors.detailedDescription ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
-              placeholder="Provide a detailed description of your invention, including all components, how they interact, and alternative embodiments"
-              rows="6"
-              required
-            />
+            <div className="flex gap-2 items-center">
+              <textarea
+                name="detailedDescription"
+                value={form.detailedDescription}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 rounded-lg border ${validationErrors.detailedDescription ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
+                placeholder="Provide a detailed description of your invention, including all components, how they interact, and alternative embodiments"
+                rows="6"
+                required
+              />
+              <button
+                type="button"
+                className="px-3 py-3 ml-4 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all flex items-center gap-1"
+                onClick={() => handleAISuggest('detailedDescription')}
+                disabled={aiLoading === 'detailedDescription'}
+              >
+                <IoSparkles className="w-4 h-4" />
+                {aiLoading === 'detailedDescription' ? 'Suggesting...' : ''}
+              </button>
+            </div>
             {showError('detailedDescription')}
           </div>
 
           <div>
             <label className="block font-medium mb-1 text-gray-700">Advantageous Effects <span className="text-[#C67B49]">*</span></label>
-            <textarea
-              name="advantageousEffects"
-              value={form.advantageousEffects}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                validationErrors.advantageousEffects ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
-              placeholder="Describe the advantages and improvements your invention provides over existing solutions"
-              rows="4"
-              required
-            />
+            <div className="flex gap-2 items-center">
+              <textarea
+                name="advantageousEffects"
+                value={form.advantageousEffects}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 rounded-lg border ${validationErrors.advantageousEffects ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
+                placeholder="Describe the advantages and improvements your invention provides over existing solutions"
+                rows="4"
+                required
+              />
+              <button
+                type="button"
+                className="px-3 py-3 ml-4 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all flex items-center gap-1"
+                onClick={() => handleAISuggest('advantageousEffects')}
+                disabled={aiLoading === 'advantageousEffects'}
+              >
+                <IoSparkles className="w-4 h-4" />
+                {aiLoading === 'advantageousEffects' ? 'Suggesting...' : ''}
+              </button>
+            </div>
             {showError('advantageousEffects')}
           </div>
 
@@ -591,50 +685,41 @@ const PatentFiling = () => {
             <label className="block font-medium mb-1 text-gray-700">Drawing References</label>
             <p className="text-sm text-gray-600 mb-4">List the drawings you plan to include and briefly describe each</p>
             <div className="space-y-4">
-              <div className="grid grid-cols-4 gap-4">
-                <input
-                  type="text"
-                  name="drawingFigure1"
-                  value={form.drawingFigure1}
-                  onChange={handleChange}
-                  className={`flex h-10 w-full rounded-md border ${
-                    validationErrors.drawingFigure1 ? 'border-red-500' : 'border-gray-300'
-                  } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-1`}
-                  placeholder="Fig. 1"
-                />
-                <input
-                  type="text"
-                  name="drawingDescription1"
-                  value={form.drawingDescription1}
-                  onChange={handleChange}
-                  className={`flex h-10 w-full rounded-md border ${
-                    validationErrors.drawingDescription1 ? 'border-red-500' : 'border-gray-300'
-                  } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3`}
-                  placeholder="Description of Figure 1"
-                />
-              </div>
-              <div className="grid grid-cols-4 gap-4">
-                <input
-                  type="text"
-                  name="drawingFigure2"
-                  value={form.drawingFigure2}
-                  onChange={handleChange}
-                  className={`flex h-10 w-full rounded-md border ${
-                    validationErrors.drawingFigure2 ? 'border-red-500' : 'border-gray-300'
-                  } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-1`}
-                  placeholder="Fig. 2"
-                />
-                <input
-                  type="text"
-                  name="drawingDescription2"
-                  value={form.drawingDescription2}
-                  onChange={handleChange}
-                  className={`flex h-10 w-full rounded-md border ${
-                    validationErrors.drawingDescription2 ? 'border-red-500' : 'border-gray-300'
-                  } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3`}
-                  placeholder="Description of Figure 2"
-                />
-              </div>
+              {form.drawings && form.drawings.map((drawing, index) => (
+                <div key={index} className="grid grid-cols-4 gap-4 items-center">
+                  <input
+                    type="text"
+                    name={`drawingFigure${index + 1}`}
+                    value={drawing.figure}
+                    onChange={e => handleDrawingChange(index, 'figure', e.target.value)}
+                    className={`flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-1`}
+                    placeholder={`Fig. ${index + 1}`}
+                  />
+                  <input
+                    type="text"
+                    name={`drawingDescription${index + 1}`}
+                    value={drawing.description}
+                    onChange={e => handleDrawingChange(index, 'description', e.target.value)}
+                    className={`flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-2`}
+                    placeholder={`Description of Figure ${index + 1}`}
+                  />
+                  <div className="flex items-center gap-2 col-span-1">
+                    <input
+                      type="file"
+                      accept="image/*,application/pdf"
+                      id={`drawing-file-${index}`}
+                      style={{ display: 'none' }}
+                      onChange={e => handleDrawingFileChange(index, e.target.files[0])}
+                    />
+                    <label htmlFor={`drawing-file-${index}`} className="px-3 py-2 bg-[#C67B49] text-white rounded cursor-pointer hover:bg-[#C67B49]/90 text-xs font-semibold shadow">
+                      Upload
+                    </label>
+                    {drawing.file && (
+                      <span className="text-xs text-gray-700 ml-2">{drawing.file.name}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -644,17 +729,26 @@ const PatentFiling = () => {
         <div className="space-y-6">
           <div>
             <label className="block font-medium mb-1 text-gray-700">Known Prior Art <span className="text-[#C67B49]">*</span></label>
-            <textarea
-              name="knownPriorArt"
-              value={form.knownPriorArt}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                validationErrors.knownPriorArt ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
-              placeholder="Describe any known existing solutions or technologies related to your invention"
-              rows="4"
-              required
-            />
+            <div className="flex gap-2 items-center">
+              <textarea
+                name="knownPriorArt"
+                value={form.knownPriorArt}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 rounded-lg border ${validationErrors.knownPriorArt ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
+                placeholder="Describe any known existing solutions or technologies related to your invention"
+                rows="4"
+                required
+              />
+              <button
+                type="button"
+                className="px-3 py-3 ml-4 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all flex items-center gap-1"
+                onClick={() => handleAISuggest('knownPriorArt')}
+                disabled={aiLoading === 'knownPriorArt'}
+              >
+                <IoSparkles className="w-4 h-4" />
+                {aiLoading === 'knownPriorArt' ? 'Suggesting...' : ''}
+              </button>
+            </div>
             {showError('knownPriorArt')}
           </div>
 
@@ -665,51 +759,67 @@ const PatentFiling = () => {
                 <div key={index} className="flex gap-4">
                   <div className="flex flex-col flex-1">
                     <label className="text-sm text-gray-600 mb-1">Reference</label>
-                    <input
-                      type="text"
-                      value={ref.reference}
-                      onChange={(e) => {
-                        const newRefs = [...form.priorArtReferences];
-                        newRefs[index] = { ...ref, reference: e.target.value };
-                        setForm(f => ({ ...f, priorArtReferences: newRefs }));
-                      }}
-                      className={`flex h-10 w-full rounded-md border ${
-                        validationErrors.priorArtReferences ? 'border-red-500' : 'border-gray-300'
-                      } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
-                      placeholder="Patent number or article title"
-                    />
+                    {ref.fromSearch ? (
+                      <div className="flex h-10 items-center px-3 bg-gray-100 rounded-md text-base text-gray-700">{ref.reference}</div>
+                    ) : (
+                      <input
+                        type="text"
+                        value={ref.reference}
+                        onChange={(e) => {
+                          const newRefs = [...form.priorArtReferences];
+                          newRefs[index] = { ...ref, reference: e.target.value };
+                          setForm(f => ({ ...f, priorArtReferences: newRefs }));
+                        }}
+                        className={`flex h-10 w-full rounded-md border ${
+                          validationErrors.priorArtReferences ? 'border-red-500' : 'border-gray-300'
+                        } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
+                        placeholder="Patent number or article title"
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col w-[200px]">
                     <label className="text-sm text-gray-600 mb-1">Type</label>
-                    <input
-                      type="text"
-                      value={ref.type}
-                      onChange={(e) => {
-                        const newRefs = [...form.priorArtReferences];
-                        newRefs[index] = { ...ref, type: e.target.value };
-                        setForm(f => ({ ...f, priorArtReferences: newRefs }));
-                      }}
-                      className={`flex h-10 w-full rounded-md border ${
-                        validationErrors.priorArtReferences ? 'border-red-500' : 'border-gray-300'
-                      } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
-                      placeholder="Patent, Article, etc."
-                    />
+                    <>
+                      {ref.fromSearch ? (
+                        <div className="flex h-10 items-center px-3 bg-gray-100 rounded-md text-base text-gray-700">{ref.type}</div>
+                      ) : (
+                        <input
+                          type="text"
+                          value={ref.type}
+                          onChange={(e) => {
+                            const newRefs = [...form.priorArtReferences];
+                            newRefs[index] = { ...ref, type: e.target.value };
+                            setForm(f => ({ ...f, priorArtReferences: newRefs }));
+                          }}
+                          className={`flex h-10 w-full rounded-md border ${
+                            validationErrors.priorArtReferences ? 'border-red-500' : 'border-gray-300'
+                          } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
+                          placeholder="Patent, Article, etc."
+                        />
+                      )}
+                    </>
                   </div>
                   <div className="flex flex-col flex-1">
                     <label className="text-sm text-gray-600 mb-1">Relevance</label>
-                    <input
-                      type="text"
-                      value={ref.relevance}
-                      onChange={(e) => {
-                        const newRefs = [...form.priorArtReferences];
-                        newRefs[index] = { ...ref, relevance: e.target.value };
-                        setForm(f => ({ ...f, priorArtReferences: newRefs }));
-                      }}
-                      className={`flex h-10 w-full rounded-md border ${
-                        validationErrors.priorArtReferences ? 'border-red-500' : 'border-gray-300'
-                      } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
-                      placeholder="How it relates to your invention"
-                    />
+                    <>
+                      {ref.fromSearch ? (
+                        <div className="flex h-10 items-center px-3 bg-gray-100 rounded-md text-base text-gray-700">{ref.relevance}</div>
+                      ) : (
+                        <input
+                          type="text"
+                          value={ref.relevance}
+                          onChange={(e) => {
+                            const newRefs = [...form.priorArtReferences];
+                            newRefs[index] = { ...ref, relevance: e.target.value };
+                            setForm(f => ({ ...f, priorArtReferences: newRefs }));
+                          }}
+                          className={`flex h-10 w-full rounded-md border ${
+                            validationErrors.priorArtReferences ? 'border-red-500' : 'border-gray-300'
+                          } bg-white px-3 py-2 text-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C67B49]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm`}
+                          placeholder="How it relates to your invention"
+                        />
+                      )}
+                    </>
                   </div>
                   {index > 0 && (
                     <button
@@ -802,7 +912,8 @@ const PatentFiling = () => {
                                     { 
                                       reference: result.reference,
                                       type: result.type,
-                                      relevance: result.relevance
+                                      relevance: result.relevance,
+                                      fromSearch: true
                                     }
                                   ]
                                 }));
@@ -831,17 +942,26 @@ const PatentFiling = () => {
         <div className="space-y-6">
           <div>
             <label className="block font-medium mb-1 text-gray-700">Claims <span className="text-[#C67B49]">*</span></label>
-            <textarea
-              name="claims"
-              value={form.claims.join('\n')}
-              onChange={(e) => setForm(f => ({ ...f, claims: e.target.value.split('\n') }))}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                validationErrors.claims ? 'border-red-500' : 'border-[#C67B49]/20'
-              } bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
-              placeholder="Enter patent claims (one per line)"
-              rows="6"
-              required
-            />
+            <div className="flex gap-2 items-center">
+              <textarea
+                name="claims"
+                value={form.claims.join('\n')}
+                onChange={(e) => setForm(f => ({ ...f, claims: e.target.value.split('\n') }))}
+                className={`w-full px-4 py-3 rounded-lg border ${validationErrors.claims ? 'border-red-500' : 'border-[#C67B49]/20'} bg-white focus:outline-none focus:ring-2 focus:ring-[#C67B49]/40 text-gray-700 text-base h-10`}
+                placeholder="Enter patent claims (one per line)"
+                rows="6"
+                required
+              />
+              <button
+                type="button"
+                className="px-3 py-3 ml-4 rounded bg-[#C67B49] text-white text-xs font-semibold shadow hover:bg-[#C67B49]/80 transition-all flex items-center gap-1"
+                onClick={() => handleAISuggest('claims')}
+                disabled={aiLoading === 'claims'}
+              >
+                <IoSparkles className="w-4 h-4" />
+                {aiLoading === 'claims' ? 'Suggesting...' : ''}
+              </button>
+            </div>
             {showError('claims')}
           </div>
         </div>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-// You may need to implement or adjust these imports for patent uploads:
-// import { uploadPatentSupportingFile, deletePatentSupportingFile, initializePatentStorage, getPatentFiling } from '../services/patentDocumentService';
+import { uploadSupportingFile, deleteSupportingFile, initializeStorage, getFiling } from '../services';
 import { IoArrowBack } from 'react-icons/io5';
 
 function PatentUploadDocuments() {
@@ -16,35 +15,100 @@ function PatentUploadDocuments() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Define patent document categories
+  // Define patent document categories with specific file type requirements
   const documentCategories = [
-    { id: 'patentApplication', name: 'Patent Application Form', required: true },
-    { id: 'specification', name: 'Specification Document', required: true },
-    { id: 'claims', name: 'Claims Document', required: true },
-    { id: 'abstract', name: 'Abstract', required: true },
-    { id: 'drawings', name: 'Drawings', required: false },
-    { id: 'declaration', name: 'Declaration', required: false }
+    { 
+      id: 'patentApplication', 
+      name: 'Patent Application Form', 
+      required: true,
+      allowedTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+      typeDescription: 'PDF or Word Document'
+    },
+    { 
+      id: 'specification', 
+      name: 'Specification Document', 
+      required: true,
+      allowedTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+      typeDescription: 'PDF or Word Document'
+    },
+    { 
+      id: 'claims', 
+      name: 'Claims Document', 
+      required: true,
+      allowedTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+      typeDescription: 'PDF or Word Document'
+    },
+    { 
+      id: 'abstract', 
+      name: 'Abstract', 
+      required: true,
+      allowedTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+      typeDescription: 'PDF or Word Document'
+    },
+    { 
+      id: 'drawings', 
+      name: 'Drawings', 
+      required: false,
+      allowedTypes: ['image/jpeg', 'image/png', 'image/tiff', 'application/pdf'],
+      typeDescription: 'JPEG, PNG, TIFF, or PDF'
+    },
+    { 
+      id: 'declaration', 
+      name: 'Declaration', 
+      required: false,
+      allowedTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+      typeDescription: 'PDF or Word Document'
+    }
   ];
 
-  // TODO: Implement file upload logic for patents
   const handleFiles = async (newFiles) => {
     if (!selectedCategory) {
       toast.error('Please select a document category first');
       return;
     }
-    // For now, just add to uploadedFiles for demo
-    setUploadedFiles(prev => [
-      ...prev,
-      ...newFiles.map(file => ({
-        id: `${file.name}-${Date.now()}`,
-        name: file.name,
-        category: selectedCategory,
-        size: file.size,
-        type: file.type
-      }))
-    ]);
-    toast.success('Files uploaded (demo)');
-    setSelectedCategory('');
+
+    const category = documentCategories.find(cat => cat.id === selectedCategory);
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const validFiles = [];
+
+    for (const file of newFiles) {
+      if (!category.allowedTypes.includes(file.type)) {
+        toast.error(`Unsupported file type for ${category.name}: ${file.name}. Allowed: ${category.typeDescription}`);
+        continue;
+      }
+      if (file.size > maxSize) {
+        toast.error(`File too large: ${file.name} (max 10MB)`);
+        continue;
+      }
+      validFiles.push(file);
+    }
+
+    if (validFiles.length > 0) {
+      try {
+        setIsUploading(true);
+        for (const file of validFiles) {
+          const result = await uploadSupportingFile(filingId, file, selectedCategory);
+          if (result.success) {
+            setUploadedFiles(prev => [...prev, {
+              id: result.data.id,
+              name: file.name,
+              category: selectedCategory,
+              size: file.size,
+              type: file.type
+            }]);
+            toast.success(`Successfully uploaded ${file.name}`);
+          } else {
+            throw new Error(result.error || 'Failed to upload file');
+          }
+        }
+        setSelectedCategory('');
+      } catch (error) {
+        console.error('Error in handleFiles:', error);
+        toast.error(`Error uploading file: ${error.message}`);
+      } finally {
+        setIsUploading(false);
+      }
+    }
   };
 
   const handleFileSelect = (e) => {
@@ -113,27 +177,44 @@ function PatentUploadDocuments() {
                 </option>
               ))}
             </select>
+            {selectedCategory && (
+              <p className="text-sm text-gray-600 mt-2">
+                Allowed file types: {documentCategories.find(cat => cat.id === selectedCategory)?.typeDescription}
+              </p>
+            )}
           </div>
 
-          <div
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-[#C67B49] transition-colors"
-            onDrop={handleFileDrop}
-            onDragOver={(e) => e.preventDefault()}
-            onClick={() => document.getElementById('file-input').click()}
-          >
+          <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-[#C67B49] transition-colors">
             <input
               id="file-input"
               type="file"
               multiple
-              className="hidden"
+              accept={selectedCategory ? documentCategories.find(cat => cat.id === selectedCategory)?.allowedTypes.join(',') : ''}
+              className="absolute opacity-0 w-full h-full top-0 left-0 cursor-pointer"
               onChange={handleFileSelect}
+              style={{zIndex:2}}
+              tabIndex={-1}
+              aria-label="File upload"
             />
-            <div className="space-y-2">
-              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-              </svg>
-              <p className="text-gray-600">Drag and drop files here, or click to select files</p>
-              <p className="text-sm text-gray-500">Supported formats: PDF, DOCX, JPEG, PNG, TIFF (Max 10MB)</p>
+            <div
+              onDrop={handleFileDrop}
+              onDragOver={(e) => e.preventDefault()}
+              onClick={() => document.getElementById('file-input').click()}
+              className="relative z-1"
+            >
+              <div className="space-y-2">
+                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <p className="text-gray-600">Drag and drop files here, or click to select files</p>
+                {selectedCategory ? (
+                  <p className="text-sm text-gray-500">
+                    Allowed formats: {documentCategories.find(cat => cat.id === selectedCategory)?.typeDescription} (Max 10MB)
+                  </p>
+                ) : (
+                  <p className="text-sm text-gray-500">Please select a document category first</p>
+                )}
+              </div>
             </div>
           </div>
 

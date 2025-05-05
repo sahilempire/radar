@@ -82,7 +82,7 @@ const CustomSelect = ({
         <div className="
           absolute w-full mt-1 bg-white rounded-lg shadow-lg
           border border-gray-200 max-h-60 overflow-y-auto
-          z-50
+          z-[9999]
         ">
           {options.map((option) => (
             <div

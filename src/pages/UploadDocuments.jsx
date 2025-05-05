@@ -76,20 +76,28 @@ function UploadDocuments() {
       return;
     }
 
-    const validFiles = newFiles.filter(file => {
-      const isValidType = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png', 'image/tiff'].includes(file.type);
-      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB
-
-      if (!isValidType) {
-        toast.error(`Unsupported file type: ${file.name}`);
-        return false;
+    // File type and size validation
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'image/jpeg',
+      'image/png',
+      'image/tiff'
+    ];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const validFiles = [];
+    for (const file of newFiles) {
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(`Unsupported file type: ${file.name}. Allowed: PDF, DOCX, JPEG, PNG, TIFF.`);
+        continue;
       }
-      if (!isValidSize) {
+      if (file.size > maxSize) {
         toast.error(`File too large: ${file.name} (max 10MB)`);
-        return false;
+        continue;
       }
-      return true;
-    });
+      validFiles.push(file);
+    }
 
     if (validFiles.length > 0) {
       try {
@@ -182,25 +190,30 @@ function UploadDocuments() {
                 />
               </div>
 
-              <div
-                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-[#C67B49] transition-colors"
-                onDrop={handleFileDrop}
-                onDragOver={(e) => e.preventDefault()}
-                onClick={() => document.getElementById('file-input').click()}
-              >
+              <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-[#C67B49] transition-colors">
                 <input
                   id="file-input"
                   type="file"
                   multiple
-                  className="hidden"
+                  className="absolute opacity-0 w-full h-full top-0 left-0 cursor-pointer"
                   onChange={handleFileSelect}
+                  style={{zIndex:2}}
+                  tabIndex={-1}
+                  aria-label="File upload"
                 />
-                <div className="space-y-2">
-                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  <p className="text-gray-600">Drag and drop files here, or click to select files</p>
-                  <p className="text-sm text-gray-500">Supported formats: PDF, DOCX, JPEG, PNG, TIFF (Max 10MB)</p>
+                <div
+                  onDrop={handleFileDrop}
+                  onDragOver={(e) => e.preventDefault()}
+                  onClick={() => document.getElementById('file-input').click()}
+                  className="relative z-1"
+                >
+                  <div className="space-y-2">
+                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p className="text-gray-600">Drag and drop files here, or click to select files</p>
+                    <p className="text-sm text-gray-500">Supported formats: PDF, DOCX, JPEG, PNG, TIFF (Max 10MB)</p>
+                  </div>
                 </div>
               </div>
 

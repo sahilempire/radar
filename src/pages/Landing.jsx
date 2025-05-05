@@ -186,12 +186,20 @@ const Landing = () => {
             </div>
             <div>
               <p className="text-gray-400 text-sm">
-                Copyright 2025. All rights reserved. Radar, A thing by <a href="https://www.neuralarc.ai/" target="_blank" rel="noopener noreferrer">
-                <img
-                  src={neuralarcLogo}
-                  alt="Neuralarc Logo"
-                  className="inline-block h-3 w-auto ml-2 align-middle"
-                /></a>
+                Copyright 2025. All rights reserved. Radar, A thing by NeuralArc
+                <a href="https://www.neuralarc.ai/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center ml-1">
+                  <svg
+                    width="25"
+                    height="15"
+                    viewBox="0 0 82 40"
+                    className="inline-block ml-1 align-baseline relative top-[3px]"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path fillRule="evenodd" clipRule="evenodd" d="M15.342 15.5017C15.9509 14.9039 15.5529 13.8653 14.7016 13.8306L0.932487 13.2706C0.41149 13.2494 2.15803e-06 12.8195 2.05852e-06 12.2964L0 1.47501C-1.02433e-07 0.93653 0.435114 0.500008 0.971853 0.500007L37.9022 0.5C38.439 0.5 38.8741 0.936524 38.8741 1.475L38.8741 38.525C38.8741 39.0635 38.439 39.5 37.9022 39.5H27.387C26.8578 39.5 26.4259 39.0753 26.4153 38.5445L26.1527 25.3895C26.1356 24.5314 25.1015 24.1125 24.4953 24.7181L15.2565 33.947C14.8801 34.323 14.2724 34.3261 13.8922 33.9539L5.91804 26.1492C5.52754 25.767 5.52706 25.1373 5.91699 24.7545L15.342 15.5017Z" fill="#8F877B" />
+                    <path d="M69.226 22.3866L69.2249 22.3855V19.4552C69.2249 16.0186 66.3289 13.2327 62.7566 13.2327C59.1843 13.2327 56.2884 16.0186 56.2884 19.4552V38.525C56.2884 39.0635 55.8533 39.5 55.3165 39.5H44.0978C43.561 39.5 43.1259 39.0635 43.1259 38.525V1.475C43.1259 0.936524 43.561 0.5 44.0978 0.5H68.2264C68.7631 0.5 69.1982 0.936522 69.1982 1.475V5.4327C69.1982 9.74052 72.6791 13.2327 76.973 13.2327H81.0281C81.5649 13.2327 82 13.6692 82 14.2077V38.525C82 39.0635 81.5649 39.5 81.0281 39.5H70.1989C69.6622 39.5 69.2271 39.0635 69.2271 38.525V22.3877L69.226 22.3866Z" fill="#2F2C28" />
+                  </svg>
+                </a>
               </p>
             </div>
           </div>

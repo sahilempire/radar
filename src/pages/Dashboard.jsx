@@ -69,7 +69,7 @@ const Dashboard = () => {
       </div>
 
       {/* Main content */}
-      <div className="relative container mx-auto px-6 py-12 md:py-16">
+      <div className="relative container mx-auto px-6 py-12 md:py-16 min-h-[calc(100vh-174px)]">
         {/* Header section */}
         <div className="text-center mb-8 md:mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">

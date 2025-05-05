@@ -98,7 +98,7 @@ const AddressInput = ({ value, onChange, error, placeholder }) => {
 
           .pac-matched {
             font-weight: 600;
-            color: #F1E8E2;
+            color: #C67B49;
             position: relative;
           }
 

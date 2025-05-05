@@ -110,7 +110,7 @@ The specimen demonstrates use of the mark "${filing.trademark_name}" in commerce
 
 export const analyzeCompliance = async (prompt) => {
   try {
-    const response = await fetch('http://localhost:3001/api/analyze', {
+    const response = await fetch('/api/analyze', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -132,7 +132,7 @@ export const analyzeCompliance = async (prompt) => {
 
 export const analyzeApprovalChances = async (prompt) => {
   try {
-    const response = await fetch('http://localhost:3001/api/analyze', {
+    const response = await fetch('/api/analyze', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export const analyzeApprovalChances = async (prompt) => {
 
 export const analyzeFilingDates = async (prompt) => {
   try {
-    const response = await fetch('http://localhost:3001/api/analyze', {
+    const response = await fetch('/api/analyze', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

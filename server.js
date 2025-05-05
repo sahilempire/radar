@@ -15,7 +15,7 @@ console.log('Environment variables:', {
 });
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 // Enable CORS
 app.use(cors());
@@ -72,6 +72,6 @@ app.post('/api/analyze', async (req, res) => {
 });
 
 // Start server
-app.listen(port, () => {
-  console.log(`Proxy server running at http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Proxy server running at http://0.0.0.0:${port}`);
 }); 

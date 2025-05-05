@@ -2,7 +2,7 @@ export const searchPriorArt = async (query, context) => {
   try {
     console.log('Starting prior art search with:', { query, context });
     
-    const response = await fetch('http://localhost:3001/api/analyze', {
+    const response = await fetch('/api/analyze', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

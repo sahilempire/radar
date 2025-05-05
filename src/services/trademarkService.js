@@ -6,7 +6,7 @@ const AI_SERVICE_URL = process.env.REACT_APP_AI_SERVICE_URL || 'http://localhost
 // Claude API helper
 export const callClaude = async (prompt) => {
   try {
-    const response = await fetch('http://localhost:3001/api/analyze', {
+    const response = await fetch('/api/analyze', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ IMPORTANT: You must respond with ONLY a valid JSON object in the following exact
 
 Do not include any other text, explanations, or formatting outside of the JSON object. The response must be valid JSON that can be parsed directly.`;
 
-    const response = await fetch('http://localhost:3001/api/analyze', {
+    const response = await fetch('/api/analyze', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -153,7 +153,7 @@ Important:
 - Make sure the JSON is complete and properly formatted
 - Do not include any additional text outside the JSON structure`;
 
-    const response = await fetch('http://localhost:3001/api/analyze', {
+    const response = await fetch('/api/analyze', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

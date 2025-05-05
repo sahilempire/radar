@@ -274,7 +274,7 @@ IMPORTANT:
 2. Respond ONLY with the JSON object, no additional text or explanation.`;
 
     // Call the AI analysis endpoint
-    const response = await fetch('http://localhost:3001/api/analyze', {
+    const response = await fetch('/api/analyze', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

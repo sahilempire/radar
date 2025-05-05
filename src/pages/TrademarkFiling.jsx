@@ -529,7 +529,7 @@ const TrademarkFiling = () => {
               />
             </div>
             <div>
-              <label className="block font-medium mb-1 text-gray-700">Owner Address <span className="text-[#C67B49]">*</span></label>
+              <label className="block font-medium mb-1 text-gray-700">Owner Address <span className="text-[#ed823a]">*</span></label>
               <AddressInput 
                 name="ownerAddress" 
                 value={form.ownerAddress} 

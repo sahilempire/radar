@@ -186,7 +186,7 @@ const Landing = () => {
             </div>
             <div>
               <p className="text-gray-400 text-sm">
-                Copyright 2025. All rights reserved. Radar, A thing by <a href="https://neuralarc.com" target="_blank" rel="noopener noreferrer">
+                Copyright 2025. All rights reserved. Radar, A thing by <a href="https://www.neuralarc.ai/" target="_blank" rel="noopener noreferrer">
                 <img
                   src={neuralarcLogo}
                   alt="Neuralarc Logo"

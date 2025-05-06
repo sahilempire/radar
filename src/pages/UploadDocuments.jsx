@@ -207,12 +207,12 @@ function UploadDocuments() {
                   onClick={() => document.getElementById('file-input').click()}
                   className="relative z-1"
                 >
-                  <div className="space-y-2">
-                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                    <p className="text-gray-600">Drag and drop files here, or click to select files</p>
-                    <p className="text-sm text-gray-500">Supported formats: PDF, DOCX, JPEG, PNG, TIFF (Max 10MB)</p>
+                <div className="space-y-2">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <p className="text-gray-600">Drag and drop files here, or click to select files</p>
+                  <p className="text-sm text-gray-500">Supported formats: PDF, DOCX, JPEG, PNG, TIFF (Max 10MB)</p>
                   </div>
                 </div>
               </div>

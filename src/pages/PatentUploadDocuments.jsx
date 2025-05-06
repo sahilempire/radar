@@ -5,15 +5,16 @@ import { uploadSupportingFile, deleteSupportingFile, initializeStorage, getFilin
 import { IoArrowBack } from 'react-icons/io5';
 
 function PatentUploadDocuments() {
-  const { id: filingId } = useParams();
+  const { id: urlFilingId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [files, setFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [isStorageReady, setIsStorageReady] = useState(true); // Assume ready for now
+  const [isStorageReady, setIsStorageReady] = useState(true);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [filingId, setFilingId] = useState(null);
 
   // Define patent document categories with specific file type requirements
   const documentCategories = [
@@ -61,9 +62,45 @@ function PatentUploadDocuments() {
     }
   ];
 
+  useEffect(() => {
+    const initializeFilingId = async () => {
+      try {
+        // First try to get filingId from URL params
+        if (urlFilingId) {
+          setFilingId(urlFilingId);
+          setIsLoading(false);
+          return;
+        }
+
+        // If no URL param, try to get from location state
+        if (location.state?.submissionData?.id) {
+          setFilingId(location.state.submissionData.id);
+          setIsLoading(false);
+          return;
+        }
+
+        // If still no filingId, show error and redirect
+        toast.error('No filing ID found. Please create a filing first.');
+        navigate('/dashboard/patent');
+      } catch (error) {
+        console.error('Error initializing filing ID:', error);
+        toast.error('Error loading filing data');
+        navigate('/dashboard/patent');
+      }
+    };
+
+    initializeFilingId();
+  }, [urlFilingId, location.state, navigate]);
+
   const handleFiles = async (newFiles) => {
     if (!selectedCategory) {
       toast.error('Please select a document category first');
+      return;
+    }
+
+    if (!filingId) {
+      toast.error('No filing ID found. Please create a filing first.');
+      navigate('/dashboard/patent');
       return;
     }
 
@@ -137,6 +174,17 @@ function PatentUploadDocuments() {
       }
     });
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-primary">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white px-4 py-10">
